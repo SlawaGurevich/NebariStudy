@@ -9,8 +9,9 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -24,6 +25,11 @@ import * as Constants from '../../constants/styleConstants'
 import WelcomeScreen from '../WelcomeScreen'
 import OptionsScreen from '../OptionsScreen'
 import StudyScreen from '../StudyScreen'
+import BrowseScreen from '../BrowseScreen'
+import HistoryScreen from '../HistoryScreen'
+import DictionaryScreen from '../DictionaryScreen'
+import SingleCardView from '../SingleCardView'
+import SwipeView from '../SwipeView'
 
 const styles = StyleSheet.create({
   welcomeView: {
@@ -39,14 +45,12 @@ const styles = StyleSheet.create({
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const App: () => React$Node = () => {
+function HomeScreen() {
   return (
-    <NavigationContainer>
-      <StatusBar backgroundColor={Constants.c_sage} />
-
-      <Tab.Navigator
+    <Tab.Navigator
       backgroundColor="red"
         screenOptions={({ route }) => ({
+          tabBarVisible: route.name !== "SwipeView",
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
 
@@ -72,15 +76,31 @@ const App: () => React$Node = () => {
         tabBarOptions={{
           activeTintColor: 'tomato',
           inactiveTintColor: 'gray',
-          showIcon: true
+          showIcon: true,
+          keyboardHidesTabBar: true
         }}
         initialRouteName="Study">
         <Tab.Screen name="Study" component={StudyScreen} />
-        <Tab.Screen name="Browse" component={WelcomeScreen} />
-        <Tab.Screen name="History" component={WelcomeScreen} />
-        <Tab.Screen name="Dictionary" component={WelcomeScreen} />
+        <Tab.Screen name="Browse" component={BrowseScreen} />
+        <Tab.Screen name="History" component={HistoryScreen} />
+        <Tab.Screen name="Dictionary" component={DictionaryScreen} />
         <Tab.Screen name="Options" component={OptionsScreen} />
       </Tab.Navigator>
+  )
+}
+
+const App: () => React$Node = () => {
+  return (
+    <NavigationContainer>
+      <StatusBar backgroundColor={Constants.c_sage} />
+
+      <Stack.Navigator screenOptions={{
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+      }}>
+        <Stack.Screen name="Home" options={{headerShown: false}} component={HomeScreen} />
+        <Stack.Screen name="SingleCardView" component={SingleCardView} options={({ route }) => ({ title: route.params.word })}/>
+        <Stack.Screen name="SwipeView" options={{headerShown: false}} component={SwipeView} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

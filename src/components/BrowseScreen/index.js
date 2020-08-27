@@ -1,3 +1,3 @@
-import BrowserScreen from './BrowserScreen'
+import BrowseScreen from './BrowseScreen'
 
-export default BrowserScreen
+export default BrowseScreen

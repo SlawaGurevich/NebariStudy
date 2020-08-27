@@ -8,6 +8,8 @@ target 'NebariStudy' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'RealmJS', :path => '../node_modules/realm'
+
   target 'NebariStudyTests' do
     inherit! :complete
     # Pods for testing

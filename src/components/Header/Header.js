@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { StyleSheet,
+         Text,
          View } from 'react-native'
 
 import * as Constants from '../../constants/styleConstants'
@@ -11,11 +12,11 @@ const Placeholder = () => {
   )
 }
 
-const Header = ({leftItem, centerItem, rightItem}) => {
+const Header = ({leftItem, title, rightItem}) => {
   return (
     <View style={styles.header}>
       { leftItem ? leftItem : <Placeholder /> }
-      { centerItem ? centerItem : <Placeholder /> }
+      { title ? <Text style={{fontWeight: "bold", color: "white"}}>{title}</Text> : <Placeholder /> }
       { rightItem ? rightItem : <Placeholder /> }
     </View>
   )

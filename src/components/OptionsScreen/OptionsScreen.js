@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { TouchableHighlight,
          Text,
+         Button,
          StyleSheet,
          SafeAreaView,
          SectionList,
@@ -10,8 +11,14 @@ import { TouchableHighlight,
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Constants from '../../constants/styleConstants';
 
+import VasernDB from '../../util/database'
 
 const Item = ({ title, link = "" }) => {
+  useEffect(() => {
+    console.log(VasernDB.Options.data())
+  },[])
+
+
   return (
     <TouchableHighlight style={styles.item}>
       <View style={styles.itemView}>
@@ -44,6 +51,8 @@ const OptionsScreen = () => {
           <Text style={styles.header}>{title}</Text>
         )}
       />
+      <Button onPress={ () => { console.log( VasernDB.Options.insert({ name: "Option", value: "Value" }) ) } } title="test" />
+      <Button onPress={ () => { VasernDB.Options.remove({}) } } title="Remove all options" />
     </SafeAreaView>
   )
 }
