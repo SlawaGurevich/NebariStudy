@@ -24,12 +24,14 @@ import {
 import * as Constants from '../../constants/styleConstants'
 import WelcomeScreen from '../WelcomeScreen'
 import OptionsScreen from '../OptionsScreen'
+import SubOptionsScreen from '../SubOptionsScreen'
 import StudyScreen from '../StudyScreen'
 import BrowseScreen from '../BrowseScreen'
 import HistoryScreen from '../HistoryScreen'
 import DictionaryScreen from '../DictionaryScreen'
 import SingleCardView from '../SingleCardView'
 import SwipeView from '../SwipeView'
+import DeckSelect from '../DeckSelect'
 
 const styles = StyleSheet.create({
   welcomeView: {
@@ -98,8 +100,10 @@ const App: () => React$Node = () => {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
       }}>
         <Stack.Screen name="Home" options={{headerShown: false}} component={HomeScreen} />
-        <Stack.Screen name="SingleCardView" component={SingleCardView} options={({ route }) => ({ title: route.params.word })}/>
+        <Stack.Screen name="SingleCardView" component={SingleCardView} options={({ route }) => ({ title: route.params.word + " " + route.params.meanings.join(", ") })}/>
         <Stack.Screen name="SwipeView" options={{headerShown: false}} component={SwipeView} />
+        <Stack.Screen name="SubOptionsScreen" component={SubOptionsScreen} options={({ route }) => ({ title: route.params.title })} />
+        <Stack.Screen name="DeckSelect" component={DeckSelect} options={{headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

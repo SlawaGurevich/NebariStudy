@@ -16,10 +16,15 @@
     "@react-navigation/bottom-tabs": "^5.8.0",
     "@react-navigation/native": "^5.7.3",
     "@react-navigation/stack": "^5.9.0",
+    "pouchdb-find": "^7.2.2",
+    "pouchdb-react-native": "^6.4.1",
+    "pouchdb-upsert": "^2.2.0",
     "react": "16.13.1",
     "react-native": "0.63.2",
     "react-native-deck-swiper": "^1.6.7",
+    "react-native-dialog": "^5.6.0",
     "react-native-gesture-handler": "^1.7.0",
+    "react-native-modal": "^11.5.6",
     "react-native-progress": "^4.1.2",
     "react-native-reanimated": "^1.13.0",
     "react-native-safe-area-context": "^3.1.6",
@@ -28,7 +33,7 @@
     "react-native-vector-icons": "^7.0.0",
     "react-native-view-overflow": "0.0.5",
     "realm": "^6.0.5",
-    "vasern": "^0.3.61"
+    "wanakana": "^4.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

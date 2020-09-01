@@ -2,11 +2,9 @@ import React from 'react'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import * as Constants from '../../../constants/styleConstants'
 
-const StickyThumb = ({ word, level, id }) => {
+const StickyThumb = ({ word, level, id, meanings }) => {
   let color = "white"
   let cardSize = ( Math.floor(Dimensions.get('window').width) - (2 * 20) - (3 * 10) ) / 4
-
-  console.log(Math.floor(Dimensions.get('window').width))
 
   switch (level) {
     case 1:
@@ -28,8 +26,11 @@ const StickyThumb = ({ word, level, id }) => {
 
   return (
     <View style={[ styles.sticky, { width: cardSize, height: cardSize }]}>
-      <Text style={[ styles.header, {backgroundColor: color}]}>{ id }</Text>
-      <Text style={styles.word}>{ word }</Text>
+      <Text style={[ styles.header, {backgroundColor: color}]}>{ id+1 }</Text>
+      <View style={styles.wordContainer}>
+        <Text numberOfLines={1} style={styles.word}>{ word }</Text>
+        <Text numberOfLines={1} style={{color: "#666", paddingHorizontal: 5 }}>{ meanings }</Text>
+      </View>
     </View>
   )
 }
@@ -53,13 +54,16 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "700"
   },
-  word: {
+  wordContainer:{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     flexGrow: 1,
+  },
+  word: {
     textAlign: "center",
     textAlignVertical: "center",
-    width: "100%",
-    height: "100%",
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "600",
   }
 })

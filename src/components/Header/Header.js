@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     height: 50,
+    flexBasis: 50,
     backgroundColor: Constants.c_ash_gray,
     paddingHorizontal: 10,
     paddingVertical: 20,

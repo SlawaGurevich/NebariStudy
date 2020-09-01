@@ -17,24 +17,22 @@ const SwipeView = ({ route, navigation }) => {
   return (
     <View style={styles.mainView}>
       <Header leftItem={<TouchableHighlight onPress={() => { navigation.goBack() }}><Text>Back</Text></TouchableHighlight>}/>
-      <View style={styles.cont}>
-        <Swiper style={styles.swiper} cards={route.params.data}
-                renderCard={(card) => {
-                  return (
-                      <View style={styles.card}>
-                          <Text style={styles.text}>{card}</Text>
-                      </View>
-                  )
-              }}
-              onSwiped={(cardIndex) => {console.log(cardIndex)}}
-              onSwipedAll={() => {console.log('onSwipedAll')}}
-              cardIndex={0}
-              backgroundColor={'transparent'}
-              stackSize= {5}
-              >
+      <Swiper style={styles.swiper} cards={route.params.data}
+              renderCard={(card) => {
+                return (
+                    <View style={styles.card}>
+                        <Text style={styles.text}>{card.entry}</Text>
+                    </View>
+                )
+            }}
+            onSwiped={(cardIndex) => {console.log(cardIndex)}}
+            onSwipedAll={() => {console.log('onSwipedAll')}}
+            cardIndex={0}
+            backgroundColor={'transparent'}
+            stackSize= {5}
+            >
 
-        </Swiper>
-      </View>
+      </Swiper>
     </View>
   )
 }
@@ -43,15 +41,7 @@ const styles = StyleSheet.create({
   mainView: {
     display: "flex",
     flexDirection: "column",
-    flexGrow: 1,
-    height: 60,
-  },
-  cont: {
-    display: "flex",
-    flexGrow: 1,
-    overflow: "hidden",
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
+    height: "100%",
   },
   test: {
     width: 20,
@@ -59,12 +49,14 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
   },
   swiper: {
-    height: 10,
-    width: "100%",
-    backgroundColor: "red"
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 50
   },
   card: {
     position: "absolute",
+    flex: 1,
     top: 0,
     left: 0,
     bottom: 0,
