@@ -28,8 +28,8 @@ const StickyThumb = ({ word, level, id, meanings }) => {
     <View style={[ styles.sticky, { width: cardSize, height: cardSize }]}>
       <Text style={[ styles.header, {backgroundColor: color}]}>{ id+1 }</Text>
       <View style={styles.wordContainer}>
-        <Text numberOfLines={1} style={styles.word}>{ word }</Text>
-        <Text numberOfLines={1} style={{color: "#666", paddingHorizontal: 5 }}>{ meanings }</Text>
+        <Text adjustsFontSizeToFit={true} numberOfLines={1} style={styles.word}>{ word }</Text>
+        <Text numberOfLines={1} style={styles.meanings}>{ meanings }</Text>
       </View>
     </View>
   )
@@ -63,8 +63,13 @@ const styles = StyleSheet.create({
   word: {
     textAlign: "center",
     textAlignVertical: "center",
+    paddingHorizontal: 5,
     fontSize: 22,
     fontWeight: "600",
+  },
+  meanings: {
+    color: "#666",
+    paddingHorizontal: 5
   }
 })
 
