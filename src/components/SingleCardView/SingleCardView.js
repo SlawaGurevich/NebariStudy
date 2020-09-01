@@ -57,7 +57,7 @@ const SingleCardView = ({ route, navigation}) => {
               :
               <View>
                 <Text style={styles.contentText}>{route.params.word}</Text>
-                <Text style={styles.readingText}>{route.params.readings}</Text>
+                <Text style={styles.readingText}>{wanakana.tokenize(route.params.readings).slice(-2)[0] }</Text>
               </View>
             }
             <Text style={styles.meaningText}>
@@ -132,7 +132,8 @@ let styles = StyleSheet.create({
   },
   readingText: {
     fontSize: 20,
-    fontWeight: "500"
+    fontWeight: "500",
+    textAlign: "center"
   },
   meaningText: {
     fontSize: 16,
