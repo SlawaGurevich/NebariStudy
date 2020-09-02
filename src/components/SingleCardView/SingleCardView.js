@@ -57,7 +57,7 @@ const SingleCardView = ({ route, navigation}) => {
               :
               <View>
                 <Text style={styles.contentText}>{route.params.word}</Text>
-                <Text style={styles.readingText}>{wanakana.tokenize(route.params.readings).slice(-2)[0] }</Text>
+                <Text style={styles.readingText}>{wanakana.tokenize(route.params.readings).filter(word => wanakana.isHiragana(word)) }</Text>
               </View>
             }
             <Text style={styles.meaningText}>
