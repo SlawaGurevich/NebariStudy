@@ -5,9 +5,11 @@ import {
   View
 } from 'react-native'
 
+import _ from "lodash"
+
 import * as Constants from '../../constants/styleConstants'
 
-import { _getOption, _listenForChanges } from '../../util/database'
+import { _getDeck } from '../../util/database'
 
 const Column = ({color, percent, stickies}) => {
   return (
@@ -21,30 +23,28 @@ class ProgressView extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedDeck: ""
+      cardLevels: [],
     }
-    this.updateSelectedDeck = this.updateSelectedDeck.bind(this)
   }
 
-  updateSelectedDeck() {
-    _getOption("SelectedDeck").then(res => {
-      console.log(res)
-      this.setState({selectedDeck: res.value})
-    }).catch(err => {console.log(err)})
-  }
-
-  componentDidMount() {
-    this.updateSelectedDeck()
-    _listenForChanges().on('change', change => {
-      console.log(change)
-      this.updateSelectedDeck()
+  getNumberOfCardsByLevel() {
+    _getDeck(this.props.store.get("selectedDeck")).then(doc => {
+      let cardLevels = []
+      cardLevels.level1 = _.partition(doc.cardList, o => o.level = 1).length
+      cardLevels.level2 = _.partition(doc.cardList, o => o.level = 2).length
+      cardLevels.level3 = _.partition(doc.cardList, o => o.level = 3).length
+      cardLevels.level4 = _.partition(doc.cardList, o => o.level = 4).length
+      cardLevels.level5 = _.partition(doc.cardList, o => o.level = 5).length
+      this.setState({cardLevels: cardLevels})
+    }).catch( err => {
+      console.log(err)
     })
   }
 
   render() {
     return(
       <View>
-        <Text>{ this.state.selectedDeck || "" }</Text>
+        <Text>{ this.props.selectedDeck }</Text>
         <View style={styles.progressViewContainer}>
           <Column color={Constants.c_level1} stickies={9999} percent={20} />
           <Column color={Constants.c_level2} stickies={9999} percent={40} />

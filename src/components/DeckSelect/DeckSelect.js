@@ -1,9 +1,16 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { Component } from 'react'
+
+
+import GLOBALS from '../../util/global'
+
+import globalStyles from '../../constants/globalStyles'
+
 import {
   Text,
   View,
   ScrollView,
   SafeAreaView,
+  StyleSheet,
   TouchableWithoutFeedback
 } from 'react-native'
 
@@ -17,23 +24,10 @@ import * as Constants from '../../constants/styleConstants'
 import { _getDecks, _deleteDeck, _addDeck, _setOption, _getOption } from '../../util/database'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 
-const DeckButton = ({name, size, getDecks}) => {
-  const [selectedDeck, setSelectedDeck] = useState("")
-
-  const getSelectedDeck = () => {
-    _getOption("SelectedDeck").then(res => {
-      setSelectedDeck(res.value)
-    }).catch(err => {console.log(err)})
-  }
-
-  useEffect(() => {
-    setSelectedDeck()
-  },[])
-
+const DeckButton = (props) => {
   return (
       <TouchableHighlight onPress={() => {
-        _setOption("SelectedDeck", "String", name)
-        setSelectedDeck(name)
+        props.setSelectedDeck(props.name)
       }}>
         <View style={{
           display: "flex",
@@ -52,12 +46,12 @@ const DeckButton = ({name, size, getDecks}) => {
             justifyContent: "space-between",
             marginEnd: 20
           }}>
-            <Text style={{fontWeight: selectedDeck == name ? "bold" : "normal"}}>{name}</Text>
-            <Text>{size}</Text>
+            <Text style={{fontWeight: props.isSelected ? "bold" : "normal"}}>{props.name}</Text>
+            <Text>{props.size}</Text>
           </View>
           <TouchableWithoutFeedback onPress={ () => {
-            _deleteDeck(name).then(res => {
-              console.log(res)
+            _deleteDeck(props.name).then(res => {
+              // console.log(res)
               getDecks()
             }).catch(err => {
               console.log("err")
@@ -76,12 +70,18 @@ class DeckSelect extends Component {
     this.navigation = props.navigation
     this.handleChange = this.handleChange.bind(this)
     this.handleCreate = this.handleCreate.bind(this)
+    this.setSelectedDeck = this.setSelectedDeck.bind(this)
+
+    _getOption("SelectedDeck").then(res => {
+      this.setState({selectedDeck: res.value})
+    }).catch(err => { console.log(err) })
 
     this.state = {
       decks: [],
-      selectedDeck: "",
       dialogVisible: false,
-      deckName: ""
+      deckName: "",
+      selectedDeck: "",
+      loading: true
     }
 
     this.getDecks = this.getDecks.bind(this)
@@ -89,21 +89,26 @@ class DeckSelect extends Component {
 
   componentDidMount() {
     this.getDecks()
-    this.getSelectedDeck()
   }
 
-  getDecks() {
-   _getDecks().then( (res) => {
-      this.setState({decks: res.docs})
-    }).catch((err) => {
-      console.log(err)
+  setSelectedDeck(name) {
+    _setOption("SelectedDeck", "String", name).then(doc => {
+      GLOBALS.WrapperState.setState({selectedDeck: name, refreshDeck: true})
+      this.setState({ selectedDeck: name })
     })
   }
 
-  getSelectedDeck() {
-    _getOption("SelectedDeck").then(res => {
-      this.setState({selectedDeck: res.value})
-    }).catch(err => { console.log(err) })
+  getDecks() {
+    this.setState({loading: true})
+   _getDecks().then( (res) => {
+      this.setState({decks: res.docs})
+      this.setState({loading: false})
+      for( let i = 0; i < res.docs.length; i++) {
+        console.log(res.docs[i].cardList.length)
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
   }
 
   handleChange(event) {
@@ -123,7 +128,7 @@ class DeckSelect extends Component {
 
   render() {
     return (
-      <View style={{display: "flex", height: "100%"}}>
+      <View style={ styles.parentView }>
         <Dialog.Container visible={this.state.dialogVisible}>
           <Dialog.Title>Account delete</Dialog.Title>
           <Dialog.Description>
@@ -145,16 +150,23 @@ class DeckSelect extends Component {
             <Icon name="plus" color="white" size={20} />
           </TouchableWithoutFeedback>
         }/>
-        <ScrollView style={{flexBasis: "100%"}}>
-        {
-          this.state.decks.length > 0 ? this.state.decks.map( (deck, i) => (
-            <DeckButton key={i} name={deck.name} size={deck.cardList ? deck.cardList.length : 0} getDecks={this.getDecks} />
-          ) ) : <Text>No decks. Please create some.</Text>
-        }
-        </ScrollView>
+        { !this.state.loading ? <ScrollView style={{flexBasis: "100%"}}>
+          {
+            this.state.decks.length > 0 ? this.state.decks.map( (deck, i) => (
+              <DeckButton key={i} name={deck.name} isSelected={deck.name == this.state.selectedDeck } size={deck.cardList ? deck.cardList.length : 0} getDecks={this.getDecks} setSelectedDeck={this.setSelectedDeck} />
+            ) ) : <View styles={ globalStyles.loadingView }><Text>No decks. Please create some.</Text></View>
+          }
+        </ScrollView> : <View style={ globalStyles.loadingView }><Text>Loading...</Text></View> }
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  parentView: {
+    display: "flex",
+    height: "100%",
+  }
+})
 
 export default DeckSelect

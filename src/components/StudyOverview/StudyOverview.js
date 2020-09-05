@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 
 import { TouchableHighlight, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+import GLOBALS from '../../util/global'
 
 import Header from '../Header'
 
@@ -14,35 +16,42 @@ import Dict from '../../util/Dict'
 
 import { _getOption, _getDeck, _getCardsFromDeck } from '../../util/database'
 
-const StudyOverview = ({ navigation }) => {
-  const [stickies, setStickies] = useState([])
+class StudyOverview extends Component {
+  constructor(props) {
+    super(props)
 
-  useEffect(() => {
-    _getOption("SelectedDeck").then(res => {
-      console.log(res)
-      _getDeck(res.value).then(deck => {
-        console.log(deck.cardList)
-        _getCardsFromDeck(deck.cardList).then(cards => {
-          console.log(cards.docs)
-          setStickies(cards.docs)
-        })
-      }).catch(err => console.log(err))
-    }).catch(err => console.log(err))
-  }, [])
+    this.state = {
+      stickyData: []
+    }
+  }
 
-  console.log( Dict.getAllKanjiOfJlptLevel(5).length )
+  componentDidMount() {
+    _getOption("SelectedDeck").then(doc => {
+      // this.props.store.set("selectedDeck")
+
+      // _getDeck(this.props.store.get("selectedDeck")).then(deck => {
+      //   // console.log(deck.cardList)
+      //   _getCardsFromDeck(deck.cardList).then(cards => {
+      //     // console.log(cards.docs)
+      //     setState({stickyData: cards.docs})
+      //   })
+      // }).catch(err => console.log(err))
+    }).catch(err => (console.log(err)))
+  }
+
+  render() {
   return (
     <View >
       <Header leftItem={
-        <TouchableHighlight onPress={ () => { navigation.navigate('DeckSelect') } } >
+        <TouchableHighlight onPress={ () => { this.props.navigation.navigate('DeckSelect') } } >
           <Icon name={"book"} size={20} color={"white"} />
         </TouchableHighlight>
       } title="Study"/>
       <View style={[ globalStyles.generalView ]}>
         <ProgressBar progress={30}/>
-        <ProgressView />
-        <TouchableHighlight onPress={() => navigation.navigate('SwipeView', {
-          data: stickies
+        <ProgressView selectedDeck={GLOBALS.WrapperState.state.selectedDeck}/>
+        <TouchableHighlight onPress={() => this.props.navigation.navigate('SwipeView', {
+          data: this.state.stickies
         })}>
           <View>
             <Text>Start studying</Text>
@@ -51,7 +60,7 @@ const StudyOverview = ({ navigation }) => {
 
       </View>
     </View>
-  )
+  ) }
 }
 
 export default StudyOverview

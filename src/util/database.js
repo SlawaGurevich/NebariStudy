@@ -16,7 +16,7 @@ const _addDeck = (name, cards = []) => {
     name: name,
     cardList: cards,
   }).then((doc) => {
-    console.log(doc)
+    // console.log(doc)
   }).catch((err) => {
     console.log(err)
   })
@@ -34,25 +34,26 @@ const _getDeck = (name) => {
 
 const _deleteDeck = (name) => {
   return db.get("Deck"+name).then(doc => {
-    console.log("doc")
-    console.log(name)
+    // console.log("doc")
+    // console.log(name)
     return db.remove(doc._id, doc._rev)
   })
 }
 
 const _getCardsFromDeck = (array) => {
+  console.log(array)
   return db.find({
     selector: {
       $or:[
         {
           type: "Card",
           wordtype: "Kanji",
-          freq: { $in: array}
+          freq: { $in: array }
         },
         {
           type: "Card",
           wordtype: "Vocab",
-          id: { $in: array}
+          _id: { $in: array }
         }
       ]
     }
@@ -78,17 +79,13 @@ const _dictionarySearch = (search) => {
 }
 
 const _setOption = (name, kind, value) => {
-  db.upsert("Option"+name, (doc) => {
+  return db.upsert("Option"+name, (doc) => {
     doc.kind = kind
     doc.value = value
     doc.type = "Option"
-    console.log(doc)
+    // console.log(doc)
     return doc
-  }).then((res) => {
-    console.log(res)
-  }).catch( (err) => {
-    console.log(err)
-  } )
+  })
 }
 
 const _listenForChanges = () => {
@@ -105,7 +102,7 @@ const _removeOption = (name) => {
   db.get("Option"+name).then((doc) => {
     return db.remove(doc)
   }).then( (doc) => {
-    console.log(doc)
+    // console.log(doc)
   }).catch( (err) => {
     console.log(err)
   })
@@ -114,17 +111,14 @@ const _removeOption = (name) => {
 const _addCard = (doc, wordtype) => {
   doc.type = "Card"
   doc.wordtype = wordtype
+  doc._id = doc.entry
   doc.timesRight = 0
   doc.timesWrong = 0
   doc.timesStudied = 0
   doc.lastStudied = null
   doc.level = 1
 
-  db.post({...doc}).then((doc)=>{
-    console.log(doc)
-  }).catch((err) => {
-    console.log(err)
-  })
+  return db.put({...doc})
 }
 
 const _getAllCards = () => {
@@ -149,11 +143,19 @@ const _firstTimeSetup = () => {
   let vocab = Dict.getAllVocab()
 
   for (let i = 0; i < 1000; i++) {
-    _addCard(kanji[i], "Kanji")
+    _addCard(kanji[i], "Kanji").then(doc => {
+      console.log(doc)
+    }).catch(err => {
+      console.log(err)
+    })
   }
 
   for (let i = 0; i < 1000; i++) {
-    _addCard(vocab[i], "Vocab")
+    _addCard(vocab[i], "Vocab").then(doc => {
+      console.log(doc)
+    }).catch(err => {
+      console.log(err)
+    })
   }
 
   createDecks()
@@ -166,11 +168,11 @@ const createDecks = () => {
   _addDeck("N4 Kanji", Dict.getAllKanjiOfJlptLevel(4).map(kanji => kanji.freq))
   _addDeck("N5 Kanji", Dict.getAllKanjiOfJlptLevel(5).map(kanji => kanji.freq))
 
-  _addDeck("N1 Vocab", Dict.getAllVocabOfJlptLevel(1).map(vocab => vocab.id))
-  _addDeck("N2 Vocab", Dict.getAllVocabOfJlptLevel(2).map(vocab => vocab.id))
-  _addDeck("N3 Vocab", Dict.getAllVocabOfJlptLevel(3).map(vocab => vocab.id))
-  _addDeck("N4 Vocab", Dict.getAllVocabOfJlptLevel(4).map(vocab => vocab.id))
-  _addDeck("N5 Vocab", Dict.getAllVocabOfJlptLevel(5).map(vocab => vocab.id))
+  _addDeck("N1 Vocab", Dict.getAllVocabOfJlptLevel(1).map(vocab => vocab._id))
+  _addDeck("N2 Vocab", Dict.getAllVocabOfJlptLevel(2).map(vocab => vocab._id))
+  _addDeck("N3 Vocab", Dict.getAllVocabOfJlptLevel(3).map(vocab => vocab._id))
+  _addDeck("N4 Vocab", Dict.getAllVocabOfJlptLevel(4).map(vocab => vocab._id))
+  _addDeck("N5 Vocab", Dict.getAllVocabOfJlptLevel(5).map(vocab => vocab._id))
 }
 
 const _destroyDb = () => {

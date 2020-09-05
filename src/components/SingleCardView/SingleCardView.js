@@ -56,7 +56,7 @@ const SingleCardView = ({ route, navigation}) => {
               </View>
               :
               <View>
-                <Text style={styles.contentText}>{route.params.word}</Text>
+                <Text style={styles.contentText} numberOfLines={1} adjustsFontSizeToFit={true}>{route.params.word}</Text>
                 <Text style={styles.readingText}>{wanakana.tokenize(route.params.readings).filter(word => wanakana.isHiragana(word)) }</Text>
               </View>
             }
@@ -128,7 +128,8 @@ let styles = StyleSheet.create({
     padding: 20,
   },
   contentText: {
-    fontSize: 70
+    fontSize: 70,
+    paddingHorizontal: 20
   },
   readingText: {
     fontSize: 20,

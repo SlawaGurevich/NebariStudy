@@ -1,8 +1,9 @@
 import React from 'react'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import * as Constants from '../../../constants/styleConstants'
+import * as wanakana from 'wanakana';
 
-const StickyThumb = ({ word, level, id, meanings }) => {
+const StickyThumb = ({ word, level, id, readings }) => {
   let color = "white"
   let cardSize = ( Math.floor(Dimensions.get('window').width) - (2 * 20) - (3 * 10) ) / 4
 
@@ -29,7 +30,7 @@ const StickyThumb = ({ word, level, id, meanings }) => {
       <Text style={[ styles.header, {backgroundColor: color}]}>{ id+1 }</Text>
       <View style={styles.wordContainer}>
         <Text adjustsFontSizeToFit={true} numberOfLines={1} style={styles.word}>{ word }</Text>
-        <Text numberOfLines={1} style={styles.meanings}>{ meanings }</Text>
+        <Text numberOfLines={1} adjustsFontSizeToFit={true} style={styles.meanings}>{ readings }</Text>
       </View>
     </View>
   )

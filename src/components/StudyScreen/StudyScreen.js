@@ -11,8 +11,6 @@ import Header from '../Header'
 import SwipeView from '../SwipeView'
 import StudyOverview from '../StudyOverview';
 
-import globalStyles from '../../constants/globalStyles'
-
 
 const Stack = createStackNavigator();
 

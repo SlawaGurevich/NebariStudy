@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 
+import GLOBALS from '../../util/global'
+
 import {  Dimensions,
           StyleSheet,
+          Text,
           TouchableHighlight,
-          View,
-          TouchableHighlightBase} from 'react-native'
+          View } from 'react-native'
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -25,18 +27,31 @@ const BrowseScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    _getOption("SelectedDeck").then(res => {
-      console.log(res)
-      _getDeck(res.value).then(deck => {
-        console.log(deck.cardList)
-        _getCardsFromDeck(deck.cardList).then(cards => {
-          console.log(cards.docs)
-          setStickies(cards.docs)
-          setLoading(false)
-        })
-      }).catch(err => console.log(err))
-    }).catch(err => console.log(err))
+      checkCurrentDeck()
+      navigation.addListener('focus', checkCurrentDeck)
   }, [])
+
+  const checkCurrentDeck = () => {
+    console.log("Browse")
+    // console.log("showinng " + GLOBALS.WrapperState.state.showingDeck)
+    // console.log("selected " + GLOBALS.WrapperState.state.selectedDeck)
+    if ( GLOBALS.WrapperState.state.showingDeck != GLOBALS.WrapperState.state.selectedDeck ) {
+      console.log("Getting cards")
+      setLoading(true)
+      getCards()
+    }
+  }
+
+  const getCards = () => {
+    // console.log(res)
+    _getDeck(GLOBALS.WrapperState.state.selectedDeck).then(deck => {
+      _getCardsFromDeck(deck.cardList).then(cards => {
+        GLOBALS.WrapperState.setState({showingDeck: GLOBALS.WrapperState.state.selectedDeck})
+        setStickies(cards.docs)
+        setLoading(false)
+      })
+    }).catch(err => console.log(err))
+  }
 
   return (
     <View>
@@ -54,10 +69,10 @@ const BrowseScreen = ({navigation}) => {
                       wordtype: item.wordtype,
                       meanings: item.meanings
                     }) }} >
-                      <StickyThumb id={index} meanings={item.meanings} word={item.entry} level={item.level} />
+                      <StickyThumb id={index} readings={item.wordtype == "Kanji" ? item.readings_kun[0] : item.readings} meanings={item.meanings} word={item.entry} level={item.level} />
                     </TouchableHighlight>
                    ) }
-                   /> : <Icon name="trash" size={20} color="red" /> }
+                   /> : <View style={[ globalStyles.loadingView, {marginBottom: 100} ]}><Text style={{color: "gray"}}>Loading...</Text></View> }
       </View>
     </View>
   )
