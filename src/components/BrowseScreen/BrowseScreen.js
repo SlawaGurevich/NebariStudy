@@ -16,6 +16,8 @@ import { FlatGrid } from 'react-native-super-grid'
 import Header from '../Header'
 import StickyThumb from './StickyThumb'
 
+import * as wanakana from 'wanakana';
+
 import globalStyles from '../../constants/globalStyles'
 
 import { _getOption, _getDeck, _getCardsFromDeck } from '../../util/database'
@@ -69,7 +71,7 @@ const BrowseScreen = ({navigation}) => {
                       wordtype: item.wordtype,
                       meanings: item.meanings
                     }) }} >
-                      <StickyThumb id={index} readings={item.wordtype == "Kanji" ? item.readings_kun[0] : item.readings} meanings={item.meanings} word={item.entry} level={item.level} />
+                      <StickyThumb id={index} readings={item.wordtype == "Kanji" ? (item.readings_kun[0] || wanakana.toKatakana(item.readings_on[0]) ) : item.readings} meanings={item.meanings} word={item.entry} level={item.level} />
                     </TouchableHighlight>
                    ) }
                    /> : <View style={[ globalStyles.loadingView, {marginBottom: 100} ]}><Text style={{color: "gray"}}>Loading...</Text></View> }
