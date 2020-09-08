@@ -41,7 +41,6 @@ const _deleteDeck = (name) => {
 }
 
 const _getCardsFromDeck = (array) => {
-  console.log(array)
   return db.find({
     selector: {
       $or:[
@@ -121,6 +120,19 @@ const _addCard = (doc, wordtype) => {
   return db.put({...doc})
 }
 
+const _getCard = (entry) => {
+  return db.get(entry)
+}
+
+const _getCards = (array) => {
+  return db.find({
+    selector: {
+      type: "Card",
+      _id: {$in: array}
+    }
+  })
+}
+
 const _getAllCards = () => {
   return db.find({
     selector: {
@@ -162,17 +174,17 @@ const _firstTimeSetup = () => {
 }
 
 const createDecks = () => {
-  _addDeck("N1 Kanji", Dict.getAllKanjiOfJlptLevel(1).map(kanji => kanji.freq))
-  _addDeck("N2 Kanji", Dict.getAllKanjiOfJlptLevel(2).map(kanji => kanji.freq))
-  _addDeck("N3 Kanji", Dict.getAllKanjiOfJlptLevel(3).map(kanji => kanji.freq))
-  _addDeck("N4 Kanji", Dict.getAllKanjiOfJlptLevel(4).map(kanji => kanji.freq))
-  _addDeck("N5 Kanji", Dict.getAllKanjiOfJlptLevel(5).map(kanji => kanji.freq))
+  _addDeck("N1 Kanji", Dict.getAllKanjiOfJlptLevel(1))
+  _addDeck("N2 Kanji", Dict.getAllKanjiOfJlptLevel(2))
+  _addDeck("N3 Kanji", Dict.getAllKanjiOfJlptLevel(3))
+  _addDeck("N4 Kanji", Dict.getAllKanjiOfJlptLevel(4))
+  _addDeck("N5 Kanji", Dict.getAllKanjiOfJlptLevel(5))
 
-  _addDeck("N1 Vocab", Dict.getAllVocabOfJlptLevel(1).map(vocab => vocab._id))
-  _addDeck("N2 Vocab", Dict.getAllVocabOfJlptLevel(2).map(vocab => vocab._id))
-  _addDeck("N3 Vocab", Dict.getAllVocabOfJlptLevel(3).map(vocab => vocab._id))
-  _addDeck("N4 Vocab", Dict.getAllVocabOfJlptLevel(4).map(vocab => vocab._id))
-  _addDeck("N5 Vocab", Dict.getAllVocabOfJlptLevel(5).map(vocab => vocab._id))
+  _addDeck("N1 Vocab", Dict.getAllVocabOfJlptLevel(1))
+  _addDeck("N2 Vocab", Dict.getAllVocabOfJlptLevel(2))
+  _addDeck("N3 Vocab", Dict.getAllVocabOfJlptLevel(3))
+  _addDeck("N4 Vocab", Dict.getAllVocabOfJlptLevel(4))
+  _addDeck("N5 Vocab", Dict.getAllVocabOfJlptLevel(5))
 }
 
 const _destroyDb = () => {
@@ -186,6 +198,8 @@ const _destroyDb = () => {
 export {  _addCard,
           _destroyDb,
           _getAllCards,
+          _getCard,
+          _getCards,
           _getOption,
           _addDeck,
           _deleteDeck,

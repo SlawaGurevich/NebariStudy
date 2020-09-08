@@ -47,11 +47,9 @@ const BrowseScreen = ({navigation}) => {
   const getCards = () => {
     // console.log(res)
     _getDeck(GLOBALS.WrapperState.state.selectedDeck).then(deck => {
-      _getCardsFromDeck(deck.cardList).then(cards => {
-        GLOBALS.WrapperState.setState({showingDeck: GLOBALS.WrapperState.state.selectedDeck})
-        setStickies(cards.docs)
-        setLoading(false)
-      })
+      GLOBALS.WrapperState.setState({showingDeck: GLOBALS.WrapperState.state.selectedDeck})
+      setStickies(deck.cardList)
+      setLoading(false)
     }).catch(err => console.log(err))
   }
 
@@ -71,7 +69,7 @@ const BrowseScreen = ({navigation}) => {
                       wordtype: item.wordtype,
                       meanings: item.meanings
                     }) }} >
-                      <StickyThumb id={index} readings={item.wordtype == "Kanji" ? (item.readings_kun[0] || wanakana.toKatakana(item.readings_on[0]) ) : item.readings} meanings={item.meanings} word={item.entry} level={item.level} />
+                      <StickyThumb id={index} readings={item.wordtype == "Kanji" ? (item.readings_kun[0] || wanakana.toKatakana(item.readings_on[0]) ) : wanakana.tokenize(item.readings).filter(word => wanakana.isHiragana(word) ) } meanings={item.meanings} word={item.entry} level={item.level} />
                     </TouchableHighlight>
                    ) }
                    /> : <View style={[ globalStyles.loadingView, {marginBottom: 100} ]}><Text style={{color: "gray"}}>Loading...</Text></View> }
