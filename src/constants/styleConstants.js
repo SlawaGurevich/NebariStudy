@@ -27,3 +27,4 @@ export const fz_sm = 10
 export const fz_md = 12
 export const fz_lg = 16
 export const fz_xl = 20
+export const fz_xxl = 30

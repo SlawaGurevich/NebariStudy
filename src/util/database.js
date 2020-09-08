@@ -69,6 +69,16 @@ const _getCard = (entry) => {
   return db.get(entry)
 }
 
+const _getRelatedCards = (kanji, limit = 9999) => {
+  return db.find({
+    selector: {
+      type: "Card",
+      _id: {$regex: `${kanji}+`, $ne: kanji},
+    },
+    limit: limit
+  })
+}
+
 const _getCards = (array) => {
   return db.find({
     selector: {
@@ -190,6 +200,7 @@ export {  _addCard,
           _getAllCards,
           _getCard,
           _getCards,
+          _getRelatedCards,
           _getOption,
           _addDeck,
           _deleteDeck,

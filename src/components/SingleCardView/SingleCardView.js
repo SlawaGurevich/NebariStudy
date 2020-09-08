@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { TouchableWithoutFeedback } from 'react-native'
 import * as Constants from '../../constants/styleConstants'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as wanakana from 'wanakana';
@@ -8,15 +7,18 @@ import * as wanakana from 'wanakana';
 import {
   Text,
   View,
-  StyleSheet
+  StyleSheet,
+  ScrollView,
+  TouchableWithoutFeedback
 } from 'react-native'
 
-import { _getCards } from '../../util/database'
+import { _getCards, _getRelatedCards } from '../../util/database'
 
 
 const SingleCardView = ({ route, navigation }) => {
   let color
   const [kanji, setKanji] = useState([])
+  const [related, setRelated] = useState([])
 
   useEffect(() => {
     let usedKanji = route.params.word.split("").filter(char => wanakana.isKanji(char))
@@ -24,6 +26,13 @@ const SingleCardView = ({ route, navigation }) => {
       setKanji(kn.docs)
     })
     .catch(err => { console.log(err) })
+
+    if (route.params.wordtype == "Kanji") {
+      _getRelatedCards(route.params.word, 5).then(related => {
+        console.log(related)
+        setRelated(related.docs)
+      }).catch(err => {console.log(err)})
+    }
   }, [])
 
   switch (route.params.level) {
@@ -45,7 +54,7 @@ const SingleCardView = ({ route, navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
         <View style={[styles.header, {backgroundColor: color}]}>
           <Text style={styles.headerText}>{route.params.id}</Text>
         </View>
@@ -53,9 +62,9 @@ const SingleCardView = ({ route, navigation }) => {
           { route.params.wordtype == "Kanji" ?
             <View style={styles.kanjiView}>
               <Text style={styles.contentText}>{route.params.word}</Text>
-              <View style={{marginLeft: 20}}>
-                <Text style={styles.readingText}>{wanakana.toKatakana( route.params.readings[0].join(", ") )}</Text>
-                <Text style={styles.readingText}>{route.params.readings[1].join(", ")}</Text>
+              <View style={{flexShrink: 1, marginLeft: 0}}>
+                <Text style={[styles.readingText, {textAlign: "left"}]}>{wanakana.toKatakana( route.params.readings[0].join(", ") )}</Text>
+                <Text style={[styles.readingText, {textAlign: "left"}]}>{route.params.readings[1].join(", ")}</Text>
               </View>
             </View>
             :
@@ -104,6 +113,37 @@ const SingleCardView = ({ route, navigation }) => {
             </TouchableWithoutFeedback>
           )) : <View style={[styles.sectionEntry, {borderBottomWidth: 0}]}><Text style={{color: Constants.c_light_gray}}>Loading...</Text></View>}
         </View> }
+        { route.params.wordtype == "Kanji" && <View style={styles.section}>
+          <View>
+            <Text style={styles.headline}>Related</Text>
+          </View>
+          { related.length > 0 ? related.map( (card, i) => (
+            <TouchableWithoutFeedback key={i} onPress={() => { navigation.push("SingleCardView", {
+              word: card.entry,
+              level: card.level,
+              id: card.entry,
+              readings: card.readings,
+              wordtype: card.wordtype,
+              meanings: card.meanings
+            }) }}>
+              <View style={styles.sectionEntry}>
+                <Text style={[sectionStyles.kanji, {fontSize: 26}]}>{card.entry}</Text>
+                <View style={{flexGrow: 1, flexShrink: 1}}>
+                  <Text numberOfLines={1} style={{fontWeight: "700",
+                                  color: Constants.c_indian_red,
+                                  flexShrink: 1,
+                                  }}>
+                      {wanakana.tokenize(card.readings).filter(word => wanakana.isHiragana(word)) }
+                  </Text>
+                  <Text numberOfLines={1} style={ styles.sectionEntryMeanings } >
+                    {card.meanings.join(", ")}
+                  </Text>
+                </View>
+                <Icon style={{ marginLeft: 5 }} name="angle-right" size={20} color={ Constants.c_ash_gray } />
+              </View>
+            </TouchableWithoutFeedback>
+          )) : <View style={[styles.sectionEntry, {borderBottomWidth: 0}]}><Text style={{color: Constants.c_light_gray}}>Loading...</Text></View>}
+        </View> }
         <View style={styles.section}>
           <View>
             <Text style={styles.headline}>Stats</Text>
@@ -118,13 +158,13 @@ const SingleCardView = ({ route, navigation }) => {
             <Text style={{flexGrow: 1}}>Last studied</Text><Text style={{fontWeight: "bold"}}>3 days ago</Text>
           </View>
         </View>
-    </View>
+    </ScrollView>
   )
 }
 
 let sectionStyles = StyleSheet.create({
   kanji: {
-    fontSize: 30,
+    fontSize: Constants.fz_xxl,
     marginRight: 10
   }
 })
@@ -145,13 +185,16 @@ let styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 10,
+    borderTopLeftRadius: Constants.c_borderRadiusDefault,
+    borderTopRightRadius: Constants.c_borderRadiusDefault,
   },
   kanjiView: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    textAlign: "left"
+    textAlign: "left",
+    overflow: "hidden"
   },
   headerText: {
     color: "white",
@@ -167,6 +210,7 @@ let styles = StyleSheet.create({
     paddingHorizontal: 20
   },
   readingText: {
+    flexShrink: 1,
     fontSize: 20,
     fontWeight: "500",
     textAlign: "center"
