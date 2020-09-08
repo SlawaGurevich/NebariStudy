@@ -83,14 +83,23 @@ const SingleCardView = ({ route, navigation }) => {
               }) }}>
               <View style={styles.sectionEntry}>
                 <Text style={sectionStyles.kanji}>{card.entry}</Text>
-                <View style={{flexGrow: 1}}>
+                <View style={{flexGrow: 1, flexShrink: 1}}>
                   <View style={{display: "flex", flexDirection: "row"}}>
-                    <Text style={{fontWeight: "700", color: Constants.c_opal}}>{ card.readings_on.map(k => wanakana.toKatakana(k)).join("、") }</Text>
-                    <Text style={{fontWeight: "700", color: Constants.c_sage, marginLeft: 5}}>{ card.readings_kun.join("、") }</Text>
+                    <Text numberOfLines={1} style={{fontWeight: "700",
+                                                    color: Constants.c_ming }}>
+                      { card.readings_on.map(k => wanakana.toKatakana(k)).join("、") }
+                    </Text>
+                    <Text numberOfLines={1} style={{fontWeight: "700",
+                                  color: Constants.c_indian_red,
+                                  marginLeft: 10,
+                                  flexShrink: 1
+                                  }}>
+                      { card.readings_kun.join("、") }
+                    </Text>
                   </View>
-                  <Text style={styles.sectionEntryMeanings}>{ card.meanings.join(", ") }</Text>
+                  <Text numberOfLines={1} style={styles.sectionEntryMeanings}>{ card.meanings.join(", ") }</Text>
                 </View>
-                <Icon name="angle-right" size={20} color={ Constants.c_ash_gray } />
+                <Icon style={{ marginLeft: 5 }} name="angle-right" size={20} color={ Constants.c_ash_gray } />
               </View>
             </TouchableWithoutFeedback>
           )) : <View style={[styles.sectionEntry, {borderBottomWidth: 0}]}><Text style={{color: Constants.c_light_gray}}>Loading...</Text></View>}
@@ -168,7 +177,10 @@ let styles = StyleSheet.create({
     textAlign: "center"
   },
   sectionEntryMeanings: {
-    fontSize: Constants.fz_md
+    flexShrink: 1,
+    flexGrow: 0,
+    fontSize: Constants.fz_md,
+    marginRight: 5
   },
   sectionEntry: {
     display: "flex",
@@ -178,7 +190,8 @@ let styles = StyleSheet.create({
     paddingVertical: 10,
     paddingRight: 10,
     borderBottomWidth: 1,
-    borderBottomColor: Constants.c_ash_gray
+    borderBottomColor: Constants.c_ash_gray,
+    overflow: "hidden"
   }
 })
 

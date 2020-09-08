@@ -10,6 +10,8 @@ export const c_sage = "#CBC9AD"
 export const c_ash_gray = "#CBD0B9"
 export const c_opal = "#BDDBD0"
 export const c_light_gray = "#888"
+export const c_ming = "#246A73"
+export const c_indian_red = "#DB5461"
 
 export const c_level1 = "#e30022"
 export const c_level2 = "#ff8b00"
