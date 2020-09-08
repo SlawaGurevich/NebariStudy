@@ -54,10 +54,11 @@ const SingleCardView = ({ route, navigation }) => {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
         <View style={[styles.header, {backgroundColor: color}]}>
           <Text style={styles.headerText}>{route.params.id}</Text>
         </View>
+        <ScrollView>
         <View style={styles.content}>
           { route.params.wordtype == "Kanji" ?
             <View style={styles.kanjiView}>
@@ -158,7 +159,8 @@ const SingleCardView = ({ route, navigation }) => {
             <Text style={{flexGrow: 1}}>Last studied</Text><Text style={{fontWeight: "bold"}}>3 days ago</Text>
           </View>
         </View>
-    </ScrollView>
+        </ScrollView>
+    </View>
   )
 }
 
