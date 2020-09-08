@@ -104,6 +104,20 @@ const SingleCardView = ({ route, navigation }) => {
             </TouchableWithoutFeedback>
           )) : <View style={[styles.sectionEntry, {borderBottomWidth: 0}]}><Text style={{color: Constants.c_light_gray}}>Loading...</Text></View>}
         </View> }
+        <View style={styles.section}>
+          <View>
+            <Text style={styles.headline}>Stats</Text>
+          </View>
+          <View style={styles.sectionEntry} >
+            <Text style={{flexGrow: 1}}>Times Wrong</Text><Text style={{fontWeight: "bold"}}>0</Text>
+          </View>
+          <View style={styles.sectionEntry} >
+            <Text style={{flexGrow: 1}}>Times Right</Text><Text style={{fontWeight: "bold"}}>0</Text>
+          </View>
+          <View style={styles.sectionEntry} >
+            <Text style={{flexGrow: 1}}>Last studied</Text><Text style={{fontWeight: "bold"}}>3 days ago</Text>
+          </View>
+        </View>
     </View>
   )
 }
@@ -168,6 +182,7 @@ let styles = StyleSheet.create({
     flexDirection: "column",
     flexWrap: "nowrap",
     paddingHorizontal: 20,
+    marginBottom: 20
   },
   headline: {
     paddingBottom: 10,
