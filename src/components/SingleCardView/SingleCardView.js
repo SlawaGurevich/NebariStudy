@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { TouchableWithoutFeedback } from 'react-native'
 import * as Constants from '../../constants/styleConstants'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -10,16 +10,21 @@ import {
   View,
   StyleSheet
 } from 'react-native'
-import { withSafeAreaInsets } from 'react-native-safe-area-context'
+
+import { _getCards } from '../../util/database'
 
 
-const SingleCardView = ({ route, navigation}) => {
+const SingleCardView = ({ route, navigation }) => {
   let color
-  const [isFlipped, setIsFlipped] = useState(false)
+  const [kanji, setKanji] = useState([])
 
-  const revealCard = () => {
-    setIsFlipped(true)
-  }
+  useEffect(() => {
+    let usedKanji = route.params.word.split("").filter(char => wanakana.isKanji(char))
+    _getCards(usedKanji).then(kn => {
+      setKanji(kn.docs)
+    })
+    .catch(err => { console.log(err) })
+  }, [])
 
   switch (route.params.level) {
     case 1:
@@ -40,50 +45,57 @@ const SingleCardView = ({ route, navigation}) => {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={revealCard}>
-      <View style={styles.container}>
-          <View style={[styles.header, {backgroundColor: color}]}>
-            <Text style={styles.headerText}>{route.params.id}</Text>
-          </View>
-          <View style={styles.content}>
-            { route.params.wordtype == "Kanji" ?
-              <View style={styles.kanjiView}>
-                <Text style={styles.contentText}>{route.params.word}</Text>
-                <View style={{marginLeft: 20}}>
-                  <Text style={styles.readingText}>{wanakana.toKatakana( route.params.readings[0].join(", ") )}</Text>
-                  <Text style={styles.readingText}>{route.params.readings[1].join(", ")}</Text>
-                </View>
+    <View style={styles.container}>
+        <View style={[styles.header, {backgroundColor: color}]}>
+          <Text style={styles.headerText}>{route.params.id}</Text>
+        </View>
+        <View style={styles.content}>
+          { route.params.wordtype == "Kanji" ?
+            <View style={styles.kanjiView}>
+              <Text style={styles.contentText}>{route.params.word}</Text>
+              <View style={{marginLeft: 20}}>
+                <Text style={styles.readingText}>{wanakana.toKatakana( route.params.readings[0].join(", ") )}</Text>
+                <Text style={styles.readingText}>{route.params.readings[1].join(", ")}</Text>
               </View>
-              :
-              <View>
-                <Text style={styles.contentText} numberOfLines={1} adjustsFontSizeToFit={true}>{route.params.word}</Text>
-                <Text style={styles.readingText}>{wanakana.tokenize(route.params.readings).filter(word => wanakana.isHiragana(word)) }</Text>
-              </View>
-            }
-            <Text style={styles.meaningText}>
-              {route.params.meanings.join(", ")}
-            </Text>
-          </View>
-          { route.params.wordtype == "Vocab" && <View style={styles.section}>
-            <View>
-              <Text style={styles.headline}>Kanji</Text>
             </View>
-            { route.params.word.split("").map((letter, i) => (
-              <View key={i} style={styles.sectionEntry}>
-                <Text style={sectionStyles.kanji}>{letter}</Text>
+            :
+            <View>
+              <Text style={styles.contentText} numberOfLines={1} adjustsFontSizeToFit={true}>{route.params.word}</Text>
+              <Text style={styles.readingText}>{wanakana.tokenize(route.params.readings).filter(word => wanakana.isHiragana(word)) }</Text>
+            </View>
+          }
+          <Text style={styles.meaningText}>
+            {route.params.meanings.join(", ")}
+          </Text>
+        </View>
+        { route.params.wordtype == "Vocab" && <View style={styles.section}>
+          <View>
+            <Text style={styles.headline}>Kanji</Text>
+          </View>
+          { kanji.length > 0 ? kanji.map((card, i) => (
+            <TouchableWithoutFeedback key={i} onPress={() => { navigation.push("SingleCardView", {
+                word: card.entry,
+                level: card.level,
+                id: card.entry,
+                readings: [card.readings_on, card.readings_kun],
+                wordtype: card.wordtype,
+                meanings: card.meanings
+              }) }}>
+              <View style={styles.sectionEntry}>
+                <Text style={sectionStyles.kanji}>{card.entry}</Text>
                 <View style={{flexGrow: 1}}>
                   <View style={{display: "flex", flexDirection: "row"}}>
-                    <Text style={{fontWeight: "700", color: Constants.c_opal}}>オン</Text>
-                    <Text style={{fontWeight: "700", color: Constants.c_sage, marginLeft: 5}}>くん</Text>
+                    <Text style={{fontWeight: "700", color: Constants.c_opal}}>{ card.readings_on.map(k => wanakana.toKatakana(k)).join("、") }</Text>
+                    <Text style={{fontWeight: "700", color: Constants.c_sage, marginLeft: 5}}>{ card.readings_kun.join("、") }</Text>
                   </View>
-                  <Text>Translation</Text>
+                  <Text style={styles.sectionEntryMeanings}>{ card.meanings.join(", ") }</Text>
                 </View>
-                <Icon name="angle-right" size={20} color={Constants.c_ash_gray} />
+                <Icon name="angle-right" size={20} color={ Constants.c_ash_gray } />
               </View>
-            )) }
-          </View> }
-      </View>
-    </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
+          )) : <View style={[styles.sectionEntry, {borderBottomWidth: 0}]}><Text style={{color: Constants.c_light_gray}}>Loading...</Text></View>}
+        </View> }
+    </View>
   )
 }
 
@@ -149,10 +161,14 @@ let styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   headline: {
-    color: Constants.c_ash_gray,
-    textAlign: "center",
+    paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: Constants.c_ash_gray
+    borderBottomColor: Constants.c_ash_gray,
+    color: Constants.c_ash_gray,
+    textAlign: "center"
+  },
+  sectionEntryMeanings: {
+    fontSize: Constants.fz_md
   },
   sectionEntry: {
     display: "flex",

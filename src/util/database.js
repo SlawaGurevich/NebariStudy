@@ -9,6 +9,8 @@ const db = new PouchDB('mydb')
 
 PouchDB.replicate('mydb', 'http://localhost:5984/mydb', {live: true});
 
+// Decks
+
 const _addDeck = (name, cards = []) => {
   db.put({
     _id: "Deck"+name,
@@ -40,25 +42,6 @@ const _deleteDeck = (name) => {
   })
 }
 
-const _getCardsFromDeck = (array) => {
-  return db.find({
-    selector: {
-      $or:[
-        {
-          type: "Card",
-          wordtype: "Kanji",
-          freq: { $in: array }
-        },
-        {
-          type: "Card",
-          wordtype: "Vocab",
-          _id: { $in: array }
-        }
-      ]
-    }
-  })
-}
-
 const _deleteAllDecks = () => {
   return db.find({
     selector: {type: "Deck"}
@@ -67,45 +50,7 @@ const _deleteAllDecks = () => {
   })
 }
 
-const _dictionarySearch = (search) => {
-  db.find({
-    selector: {
-      $or: {
-
-      }
-    }
-  })
-}
-
-const _setOption = (name, kind, value) => {
-  return db.upsert("Option"+name, (doc) => {
-    doc.kind = kind
-    doc.value = value
-    doc.type = "Option"
-    // console.log(doc)
-    return doc
-  })
-}
-
-const _listenForChanges = () => {
-  return db.changes({
-    since: 'now'
-  })
-}
-
-const _getOption = (name) => {
-  return db.get("Option"+name)
-}
-
-const _removeOption = (name) => {
-  db.get("Option"+name).then((doc) => {
-    return db.remove(doc)
-  }).then( (doc) => {
-    // console.log(doc)
-  }).catch( (err) => {
-    console.log(err)
-  })
-}
+// Cards
 
 const _addCard = (doc, wordtype) => {
   doc.type = "Card"
@@ -139,16 +84,61 @@ const _getAllCards = () => {
       type: "Card"
     }
   })
-
-  // db.allDocs({
-  //   include_docs: true,
-  //   attachments: true
-  // }).then(function (result) {
-  //   console.log(result)
-  // }).catch(function (err) {
-  //   console.log(err);
-  // });
 }
+
+const _getCardsFromDeck = (deck) => {
+  return db.find({
+    selector: { type: "Deck", name: deck }
+  })
+}
+
+const _setOption = (name, kind, value) => {
+  return db.upsert("Option"+name, (doc) => {
+    doc.kind = kind
+    doc.value = value
+    doc.type = "Option"
+    // console.log(doc)
+    return doc
+  })
+}
+
+// Options
+
+const _getOption = (name) => {
+  return db.get("Option"+name)
+}
+
+const _removeOption = (name) => {
+  db.get("Option"+name).then((doc) => {
+    return db.remove(doc)
+  }).then( (doc) => {
+    // console.log(doc)
+  }).catch( (err) => {
+    console.log(err)
+  })
+}
+
+// Dictionary
+
+// const _dictionarySearch = (search) => {
+//   db.find({
+//     selector: {
+//       $or: {
+
+//       }
+//     }
+//   })
+// }
+
+// Listener
+
+const _listenForChanges = () => {
+  return db.changes({
+    since: 'now'
+  })
+}
+
+// Debug
 
 const _firstTimeSetup = () => {
   let kanji = Dict.getAllKanjiAsArray()

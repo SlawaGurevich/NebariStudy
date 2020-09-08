@@ -49,7 +49,7 @@ class StudyOverview extends Component {
       } title="Study"/>
       <View style={[ globalStyles.generalView ]}>
         <ProgressBar progress={30}/>
-        <ProgressView selectedDeck={GLOBALS.WrapperState.state.selectedDeck}/>
+        <ProgressView selectedDeck={GLOBALS.WrapperState.state.selectedDeck || ""}/>
         <TouchableHighlight onPress={() => this.props.navigation.navigate('SwipeView', {
           data: this.state.stickies
         })}>
