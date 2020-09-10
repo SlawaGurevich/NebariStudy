@@ -13,6 +13,12 @@ export const c_light_gray = "#888"
 export const c_ming = "#246A73"
 export const c_indian_red = "#DB5461"
 
+export const c_fluffy = "#F8EDD1"
+export const c_coral = "#D88A8A"
+export const c_dark = "#474843"
+export const c_beige = "#9D9D93"
+export const c_lost_soul = "#C5CFC6"
+
 export const c_level1 = "#e30022"
 export const c_level2 = "#ff8b00"
 export const c_level3 = "#fee72f"

@@ -11,7 +11,8 @@ import { _getOption } from '../../util/database'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
-  StatusBar
+  StatusBar,
+  Text
 } from 'react-native';
 
 import * as Constants from '../../constants/styleConstants'
@@ -81,6 +82,7 @@ class AppWrapper extends Component {
     }
 
     GLOBAL.WrapperState = this
+    GLOBAL.loaded = true
   }
 
   componentDidMount() {
@@ -93,7 +95,7 @@ class AppWrapper extends Component {
 
   render() {
     return (
-      <NavigationContainer>
+      GLOBAL.loaded ? <NavigationContainer>
         <StatusBar backgroundColor={Constants.c_sage} />
 
         <Stack.Navigator screenOptions={{
@@ -105,7 +107,7 @@ class AppWrapper extends Component {
           <Stack.Screen name="SubOptionsScreen" component={SubOptionsScreen} options={({ route }) => ({ title: route.params.title })} />
           <Stack.Screen name="DeckSelect" component={DeckSelect} options={{headerShown: false}} />
         </Stack.Navigator>
-      </NavigationContainer>
+      </NavigationContainer> : <Text>Loading</Text>
     )
   }
 }

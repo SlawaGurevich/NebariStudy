@@ -6,32 +6,34 @@ import * as Constants from '../../constants/styleConstants'
 const ProgressBar = ({ progress }) => {
   return (
     <View style={styles.progressBar}>
-      <View style={[ styles.progressBarInner, {width: progress + "%"} ]} >
-        <Text style={styles.progressBarLabel}>{ progress }</Text>
-      </View>
+      <View style={[ styles.progressBarInner, {width: progress + "%"} ]} ></View>
+      <Text style={styles.progressBarLabel}>{ progress }%</Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   progressBar: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     width: "100%",
     height: 40,
     borderRadius: Constants.c_borderRadiusDefault,
     borderWidth: 1,
-    borderColor: Constants.c_dark_olive_green,
-    backgroundColor: Constants.c_sage
+    borderColor: Constants.c_coral,
+    backgroundColor: Constants.c_fluffy
   },
   progressBarInner: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    position: "absolute",
     height: '100%',
-    borderRadius: Constants.c_borderRadiusDefault,
-    backgroundColor: Constants.c_dark_olive_green
+    left: 0,
+    borderTopRightRadius: Constants.c_borderRadiusDefault,
+    borderBottomRightRadius: Constants.c_borderRadiusDefault,
+    backgroundColor: Constants.c_coral
   },
   progressBarLabel: {
-    color: "white"
+
   }
 })
 

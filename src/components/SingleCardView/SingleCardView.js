@@ -100,7 +100,7 @@ const SingleCardView = ({ route, navigation }) => {
                       { card.readings_on.map(k => wanakana.toKatakana(k)).join("、") }
                     </Text>
                     <Text numberOfLines={1} style={{fontWeight: "700",
-                                  color: Constants.c_indian_red,
+                                  color: Constants.c_coral,
                                   marginLeft: 10,
                                   flexShrink: 1
                                   }}>

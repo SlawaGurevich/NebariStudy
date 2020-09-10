@@ -21,7 +21,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Header from '../Header'
 import * as Constants from '../../constants/styleConstants'
 
-import { _getDecks, _deleteDeck, _addDeck, _setOption, _getOption } from '../../util/database'
+import { _getDecks, _deleteDeck, _addDeck, _setOption, _getOption, _getDeck } from '../../util/database'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 
 const DeckButton = (props) => {
@@ -92,9 +92,11 @@ class DeckSelect extends Component {
   }
 
   setSelectedDeck(name) {
-    _setOption("SelectedDeck", "String", name).then(doc => {
-      GLOBALS.WrapperState.setState({selectedDeck: name, refreshDeck: true})
-      this.setState({ selectedDeck: name })
+    _getDeck(name).then(deck => {
+      _setOption("SelectedDeck", "String", deck).then(doc => {
+        GLOBALS.WrapperState.setState({selectedDeck: deck, refreshDeck: true})
+        this.setState({ selectedDeck: deck })
+      })
     })
   }
 
@@ -153,7 +155,7 @@ class DeckSelect extends Component {
         { !this.state.loading ? <ScrollView style={{flexBasis: "100%"}}>
           {
             this.state.decks.length > 0 ? this.state.decks.map( (deck, i) => (
-              <DeckButton key={i} name={deck.name} isSelected={deck.name == this.state.selectedDeck } size={deck.cardList ? deck.cardList.length : 0} getDecks={this.getDecks} setSelectedDeck={this.setSelectedDeck} />
+              <DeckButton key={i} name={deck.name} isSelected={deck.name == this.state.selectedDeck.name } size={deck.cardList ? deck.cardList.length : 0} getDecks={this.getDecks} setSelectedDeck={this.setSelectedDeck} />
             ) ) : <View styles={ globalStyles.loadingView }><Text>No decks. Please create some.</Text></View>
           }
         </ScrollView> : <View style={ globalStyles.loadingView }><Text>Loading...</Text></View> }

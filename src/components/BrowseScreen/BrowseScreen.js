@@ -37,7 +37,7 @@ const BrowseScreen = ({navigation}) => {
     console.log("Browse")
     // console.log("showinng " + GLOBALS.WrapperState.state.showingDeck)
     // console.log("selected " + GLOBALS.WrapperState.state.selectedDeck)
-    if ( GLOBALS.WrapperState.state.showingDeck != GLOBALS.WrapperState.state.selectedDeck ) {
+    if ( (GLOBALS.WrapperState.state.showingDeck != GLOBALS.WrapperState.state.selectedDeck) || !GLOBALS.WrapperState.state.showingDeck ) {
       console.log("Getting cards")
       setLoading(true)
       getCards()
@@ -46,11 +46,9 @@ const BrowseScreen = ({navigation}) => {
 
   const getCards = () => {
     // console.log(res)
-    _getDeck(GLOBALS.WrapperState.state.selectedDeck).then(deck => {
       GLOBALS.WrapperState.setState({showingDeck: GLOBALS.WrapperState.state.selectedDeck})
-      setStickies(deck.cardList)
-      setLoading(false)
-    }).catch(err => console.log(err))
+      setStickies(GLOBALS.WrapperState.state.selectedDeck.cardList)
+      setTimeout(() => {setLoading(false)}, 200)
   }
 
   return (

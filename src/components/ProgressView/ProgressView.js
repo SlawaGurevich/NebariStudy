@@ -7,8 +7,6 @@ import {
 
 import _ from "lodash"
 
-import GLOBALS from '../../util/global'
-
 import * as Constants from '../../constants/styleConstants'
 
 import { _getDeck, _getOption, _getCardsFromDeck } from '../../util/database'
@@ -26,6 +24,7 @@ class ProgressView extends Component {
     super(props)
     this.state = {
       cardLevels: [],
+      selectedDeck: props.selectedDeck
     }
   }
 
@@ -33,40 +32,43 @@ class ProgressView extends Component {
     this.getNumberOfCardsByLevel()
   }
 
+  componentDidUpdate(previousProps, previousState) {
+    if( previousProps.selectedDeck != this.props.selectedDeck ) {
+      this.getNumberOfCardsByLevel()
+    }
+  }
+
   getNumberOfCardsByLevel() {
+    let cards = this.props.selectedDeck ? this.props.selectedDeck.cardList : []
 
-      _getDeck(this.props.selectedDeck).then(doc => {
-        _getCardsFromDeck(doc.cardList).then(res => {
-          let cards = res.docs
-          let cardLevels = {}
+    if ( cards.length > 0 ){
+      let cardLevels = {}
 
-          console.log(cards[0])
+      // console.log("cards")
+      // console.log(cards.map(ca => ca.level))
 
-          cardLevels.level1 = cards.filter(card => card.level == 1).length
-          cardLevels.level2 = cards.filter(card => card.level == 2).length
-          cardLevels.level3 = cards.filter(card => card.level == 3).length
-          cardLevels.level4 = cards.filter(card => card.level == 4).length
-          cardLevels.level5 = cards.filter(card => card.level == 5).length
-          cardLevels.total = cards.length
+      cardLevels.level1 = cards.filter(card => card.level == 1 || !card.level).length
+      cardLevels.level2 = cards.filter(card => card.level == 2).length
+      cardLevels.level3 = cards.filter(card => card.level == 3).length
+      cardLevels.level4 = cards.filter(card => card.level == 4).length
+      cardLevels.level5 = cards.filter(card => card.level == 5).length
+      cardLevels.total = cards.length || 0
 
-          console.log(cardLevels)
-          this.setState({cardLevels: cardLevels})
-        }).catch(err => { console.log(err) })
-      }).catch( err => { console.log(err) })
-
+      this.setState({cardLevels: cardLevels})
+    }
   }
 
   render() {
     return(
-      <View>
-        <Text>{ this.props.selectedDeck }</Text>
-        <View style={styles.progressViewContainer}>
+      <View style={styles.viewOuter}>
+        <Text style={styles.viewHeaderText}>{ this.props.selectedDeck ? this.props.selectedDeck.name : "loading..." }</Text>
+        { this.props.selectedDeck ? <View style={styles.progressViewContainer}>
           <Column color={Constants.c_level1} stickies={this.state.cardLevels.level1} percent={100 * this.state.cardLevels.level1 / this.state.cardLevels.total} />
           <Column color={Constants.c_level2} stickies={this.state.cardLevels.level2} percent={100 * this.state.cardLevels.level2 / this.state.cardLevels.total} />
           <Column color={Constants.c_level3} stickies={this.state.cardLevels.level3} percent={100 * this.state.cardLevels.level3 / this.state.cardLevels.total} />
           <Column color={Constants.c_level4} stickies={this.state.cardLevels.level4} percent={100 * this.state.cardLevels.level4 / this.state.cardLevels.total} />
           <Column color={Constants.c_level5} stickies={this.state.cardLevels.level5} percent={100 * this.state.cardLevels.level5 / this.state.cardLevels.total} />
-        </View>
+        </View> : <Text>Loading</Text> }
       </View>
     )
   }
@@ -79,13 +81,26 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-end",
     height: 250,
-    marginTop: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 5,
+    paddingTop: 5
+  },
+  viewOuter: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 10,
+    paddingVertical: 5,
     borderRadius: 5,
     backgroundColor: "white",
     shadowColor: "black",
-
+  },
+  viewHeaderText: {
+    width: "100%",
+    height: 40,
+    textAlignVertical: "center",
+    textAlign: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: Constants.c_ash_gray
   },
   column: {
     display: "flex",
