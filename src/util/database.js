@@ -2,6 +2,8 @@ import PouchDB from 'pouchdb-react-native'
 
 import Dict from './Dict'
 
+import * as wanakana from 'wanakana';
+
 PouchDB.plugin(require('pouchdb-upsert'));
 PouchDB.plugin(require('pouchdb-find'));
 
@@ -130,15 +132,38 @@ const _removeOption = (name) => {
 
 // Dictionary
 
-// const _dictionarySearch = (search) => {
-//   db.find({
-//     selector: {
-//       $or: {
+const _dictionarySearch = (search) => {
+  let isKanji = wanakana.isKanji(search)
+  let isRomaji = wanakana.isRomaji(search)
+  let isHiragana = wanakana.isHiragana(search)
+  let isKatakana = wanakana.isKatakana(search)
 
-//       }
-//     }
-//   })
-// }
+  if ( isKanji ) {
+    return db.find({
+      selector: {
+        type: "Card",
+        _id: {$regex: `${search}`},
+      },
+    })
+  } else if (isRomaji) {
+    return db.find({
+      selector: {
+        _id: { $eq: "日" }
+      }
+    })
+  } else {
+    return db.find({
+      selector: {
+        $or: [
+          {
+            type: "Card",
+            entry: {$regex: `(${search})+`}
+          }
+        ]
+      }
+    })
+  }
+}
 
 // Listener
 
@@ -209,5 +234,6 @@ export {  _addCard,
           _getCardsFromDeck,
           _setOption,
           _removeOption,
+          _dictionarySearch,
           _firstTimeSetup,
           _listenForChanges }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Component } from 'react'
 
 import { FlatList, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -6,18 +6,19 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import globalStyles from '../../constants/globalStyles'
 import * as Constants from '../../constants/styleConstants'
 
+import { _dictionarySearch } from '../../util/database'
+
 import Header from '../Header'
 
-const ListItem = ({ title, reading, translation }) => {
+const ListItem = ({ title, readings, meanings, wordtype }) => {
   return (
     <View style={styles.listItemWrapper}>
       <View style={styles.listItemOuter}>
         <View style={styles.listItemFirstLine}>
-          <Text style={{fontWeight: "700", color: Constants.c_opal}}>{title}</Text><Text>{reading}</Text>
+          <Text style={{fontWeight: "700", color: Constants.c_opal}}>{title}</Text><Text>{readings}</Text>
         </View>
         <View tyle={styles.listItemTranslations}>
-          <Text>{translation.de}</Text>
-          <Text>{translation.ru}</Text>
+          <Text>{meanings}</Text>
         </View>
       </View>
       <Icon name="angle-right" size={20} />
@@ -25,10 +26,17 @@ const ListItem = ({ title, reading, translation }) => {
   )
 }
 
-const DictionaryScreen = () => {
-  const [searchValue, setSearchValue] = useState("")
+class DictionaryScreen extends Component {
+  constructor(props) {
+    super(props)
+    this.input = React.createRef()
+    this.state = {
+      searchString: "",
+      results: []
+    }
+  }
 
-  const DATA = [
+  DATA = [
     { title: "東京",
       reading: "とうきょう",
       translation: {
@@ -38,25 +46,39 @@ const DictionaryScreen = () => {
     }
   ]
 
-  return (
-    <View>
-      <Header title="Dictionary"/>
-      <View style={styles.searchInput}>
-          <Icon size={16} name="search" color={Constants.c_ash_gray}/>
-          <TextInput value={searchValue} onChangeText={ (text) => { setSearchValue(text) } } style={ styles.searchInputText } placeholder="Search" />
-          {searchValue !== "" && <TouchableHighlight onPress={() => {setSearchValue("")}}>
-            <Icon name="times-circle" size={20} />
-          </TouchableHighlight>}
-        </View>
+  searchDictionary = (search) => {
+    this.setState({searchString: search})
+    _dictionarySearch(search).then(docs => {
+      console.log(docs.docs)
+      this.setState({results: docs.docs})
+    }).catch(err => {console.log(err)})
+  }
+
+  render() {
+    return (
       <View>
-        <FlatList data={DATA}
-                  keyExtractor={(item, index) => 'key' + index}
-                  renderItem={ ({ item }) => (
-                    <ListItem title={item.title} reading={item.reading} translation={item.translation} />
-                  ) }/>
+        <Header title="Dictionary"/>
+        <View style={styles.searchInput}>
+            <Icon size={16} name="search" color={Constants.c_ash_gray}/>
+            <TextInput ref={ (inp) => { this.input = inp; }} value={this.state.searchString} onChangeText={ (text) => { this.searchDictionary(text) } } style={ styles.searchInputText } placeholder="Search" />
+            {this.state.searchString !== "" && <TouchableHighlight onPress={() => { this.setState({searchString: "", results:[] }); this.input.focus() } }>
+              <Icon name="times-circle" size={20} />
+            </TouchableHighlight>}
+          </View>
+        <View>
+          <FlatList data={this.state.results}
+                    keyExtractor={(item, index) => 'key' + index}
+                    renderItem={ ({ item }) => (
+                      <ListItem title={item.entry}
+                                reading={item.readings || [item.readings_on, item.readings_kun]}
+                                wordtype={item.wordtype}
+                                meanings={item.meanings} />
+                    ) }/>
+      {}
+        </View>
       </View>
-    </View>
-  )
+    )
+  }
 }
 
 const styles = StyleSheet.create({
