@@ -19,21 +19,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 40,
+    marginBottom: 10,
     borderRadius: Constants.c_borderRadiusDefault,
     borderWidth: 1,
-    borderColor: Constants.c_coral,
-    backgroundColor: Constants.c_fluffy
+    borderColor: Constants.c_highlight,
+    overflow: "hidden"
   },
   progressBarInner: {
     position: "absolute",
     height: '100%',
     left: 0,
-    borderTopRightRadius: Constants.c_borderRadiusDefault,
-    borderBottomRightRadius: Constants.c_borderRadiusDefault,
-    backgroundColor: Constants.c_coral
+    backgroundColor: Constants.c_highlight
   },
   progressBarLabel: {
-
+    color: Constants.c_blueish_gray,
+    fontWeight: "bold"
   }
 })
 

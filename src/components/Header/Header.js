@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     height: 50,
     flexBasis: 50,
-    backgroundColor: Constants.c_ash_gray,
+    backgroundColor: Constants.c_coral,
     paddingHorizontal: 10,
     paddingVertical: 20,
   },

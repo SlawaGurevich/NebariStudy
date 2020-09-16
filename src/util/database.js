@@ -145,19 +145,22 @@ const _dictionarySearch = (search) => {
         _id: {$regex: `${search}`},
       },
     })
-  } else if (isRomaji) {
-    return db.find({
-      selector: {
-        _id: { $eq: "日" }
-      }
-    })
+  // } else if (isRomaji) {
+  //   return db.find({
+  //     selector: {
+  //       _id: { $eq: "日" }
+  //     }
+  //   })
   } else {
     return db.find({
       selector: {
+        type: "Card",
         $or: [
           {
-            type: "Card",
             entry: {$regex: `(${search})+`}
+          },
+          {
+            meanings: {$elemMatch: search}
           }
         ]
       }

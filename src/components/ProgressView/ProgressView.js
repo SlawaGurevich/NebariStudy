@@ -14,7 +14,8 @@ import { _getDeck, _getOption, _getCardsFromDeck } from '../../util/database'
 const Column = ({color, percent, stickies}) => {
   return (
     <View style={[ styles.column, { height: percent+"%", backgroundColor: color }]}>
-      <Text style={{ color: "white", fontWeight: "700" }}>{ stickies }</Text>
+      <View style={{ width: "100%", height: 2, backgroundColor: "white" }}></View>
+      <Text style={{ color: "white", fontWeight: "700", paddingVertical: 5 }}>{ stickies }</Text>
     </View>
   )
 }
@@ -63,11 +64,11 @@ class ProgressView extends Component {
       <View style={styles.viewOuter}>
         <Text style={styles.viewHeaderText}>{ this.props.selectedDeck ? this.props.selectedDeck.name : "loading..." }</Text>
         { this.props.selectedDeck ? <View style={styles.progressViewContainer}>
-          <Column color={Constants.c_level1} stickies={this.state.cardLevels.level1} percent={100 * this.state.cardLevels.level1 / this.state.cardLevels.total} />
-          <Column color={Constants.c_level2} stickies={this.state.cardLevels.level2} percent={100 * this.state.cardLevels.level2 / this.state.cardLevels.total} />
-          <Column color={Constants.c_level3} stickies={this.state.cardLevels.level3} percent={100 * this.state.cardLevels.level3 / this.state.cardLevels.total} />
-          <Column color={Constants.c_level4} stickies={this.state.cardLevels.level4} percent={100 * this.state.cardLevels.level4 / this.state.cardLevels.total} />
-          <Column color={Constants.c_level5} stickies={this.state.cardLevels.level5} percent={100 * this.state.cardLevels.level5 / this.state.cardLevels.total} />
+          <Column color={Constants.c_level1} stickies={this.state.cardLevels.level1} percent={15 + 85 * this.state.cardLevels.level1 / this.state.cardLevels.total} />
+          <Column color={Constants.c_level2} stickies={this.state.cardLevels.level2} percent={15 + 85 * this.state.cardLevels.level2 / this.state.cardLevels.total} />
+          <Column color={Constants.c_level3} stickies={this.state.cardLevels.level3} percent={15 + 85 * this.state.cardLevels.level3 / this.state.cardLevels.total} />
+          <Column color={Constants.c_level4} stickies={this.state.cardLevels.level4} percent={15 + 85 * this.state.cardLevels.level4 / this.state.cardLevels.total} />
+          <Column color={Constants.c_level5} stickies={this.state.cardLevels.level5} percent={15 + 85 * this.state.cardLevels.level5 / this.state.cardLevels.total} />
         </View> : <Text>Loading</Text> }
       </View>
     )
@@ -80,37 +81,31 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
+    width: "100%",
     height: 250,
-    paddingTop: 5
   },
   viewOuter: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    marginBottom: 10,
-    paddingVertical: 5,
+    paddingTop: 5,
     borderRadius: 5,
-    backgroundColor: "white",
     shadowColor: "black",
   },
   viewHeaderText: {
     width: "100%",
-    height: 40,
+    marginBottom: 10,
     textAlignVertical: "center",
     textAlign: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: Constants.c_ash_gray
   },
   column: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "flex-end",
-    flexBasis: "10%",
-    flexGrow: 1,
-    marginHorizontal: 5,
-    paddingBottom: 10
+    width: 65,
+    borderRadius: 10
   }
 })
 

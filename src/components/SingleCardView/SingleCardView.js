@@ -97,14 +97,14 @@ const SingleCardView = ({ route, navigation }) => {
                   <View style={{display: "flex", flexDirection: "row"}}>
                     <Text numberOfLines={1} style={{fontWeight: "700",
                                                     color: Constants.c_ming }}>
-                      { card.readings_on.map(k => wanakana.toKatakana(k)).join("、") }
+                      { card.readings_on && card.readings_on.map(k => wanakana.toKatakana(k)).join("、") }
                     </Text>
                     <Text numberOfLines={1} style={{fontWeight: "700",
                                   color: Constants.c_coral,
                                   marginLeft: 10,
                                   flexShrink: 1
                                   }}>
-                      { card.readings_kun.join("、") }
+                      { card.readings_kun && card.readings_kun.join("、") }
                     </Text>
                   </View>
                   <Text numberOfLines={1} style={styles.sectionEntryMeanings}>{ card.meanings.join(", ") }</Text>
