@@ -7,8 +7,6 @@ import { Text,
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Header from '../Header'
-import SwipeView from '../SwipeView'
 import StudyOverview from '../StudyOverview';
 
 

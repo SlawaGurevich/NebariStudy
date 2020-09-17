@@ -6,11 +6,11 @@ const globalStyles = StyleSheet.create({
     display: 'flex',
     justifyContent: "flex-start",
     height: "100%",
-    padding: 10,
     overflow: "scroll"
   },
   cardView: {
-    margin: 10,
+    marginBottom: 10,
+    marginHorizontal: 10,
     padding: 10,
     borderRadius: 5,
     backgroundColor: "white",

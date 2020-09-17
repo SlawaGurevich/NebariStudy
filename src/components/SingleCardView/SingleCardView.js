@@ -64,8 +64,8 @@ const SingleCardView = ({ route, navigation }) => {
             <View style={styles.kanjiView}>
               <Text style={styles.contentText}>{route.params.word}</Text>
               <View style={{flexShrink: 1, marginLeft: 0}}>
-                <Text style={[styles.readingText, {textAlign: "left"}]}>{wanakana.toKatakana( route.params.readings[0].join(", ") )}</Text>
-                <Text style={[styles.readingText, {textAlign: "left"}]}>{route.params.readings[1].join(", ")}</Text>
+                <Text style={[styles.readingText, {textAlign: "left", color: Constants.c_ming}]}>{wanakana.toKatakana( route.params.readings[0].join(", ") )}</Text>
+                <Text style={[styles.readingText, {textAlign: "left", color: Constants.c_coral}]}>{route.params.readings[1].join(", ")}</Text>
               </View>
             </View>
             :
@@ -131,7 +131,7 @@ const SingleCardView = ({ route, navigation }) => {
                 <Text style={[sectionStyles.kanji, {fontSize: 26}]}>{card.entry}</Text>
                 <View style={{flexGrow: 1, flexShrink: 1}}>
                   <Text numberOfLines={1} style={{fontWeight: "700",
-                                  color: Constants.c_indian_red,
+                                  color: Constants.c_ming,
                                   flexShrink: 1,
                                   }}>
                       {wanakana.tokenize(card.readings).filter(word => wanakana.isHiragana(word)) }
@@ -180,7 +180,15 @@ let styles = StyleSheet.create({
     left: 20,
     backgroundColor: "white",
     borderRadius: 6,
-    overflow: "hidden"
+    overflow: "hidden",
+    shadowColor: "#eeeeee",
+    shadowOffset: {
+      width: 7,
+      height: 7,
+    },
+    shadowOpacity: .1,
+    shadowRadius: 4,
+    elevation: 15,
   },
   header: {
     display: "flex",
@@ -233,8 +241,8 @@ let styles = StyleSheet.create({
   headline: {
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: Constants.c_ash_gray,
-    color: Constants.c_ash_gray,
+    borderBottomColor: Constants.c_light_gray,
+    color: Constants.c_light_gray,
     textAlign: "center"
   },
   sectionEntryMeanings: {
@@ -251,7 +259,7 @@ let styles = StyleSheet.create({
     paddingVertical: 10,
     paddingRight: 10,
     borderBottomWidth: 1,
-    borderBottomColor: Constants.c_ash_gray,
+    borderBottomColor: Constants.c_light_gray,
     overflow: "hidden"
   }
 })

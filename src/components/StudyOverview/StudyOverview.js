@@ -64,13 +64,13 @@ class StudyOverview extends Component {
 
   render() {
   return (
-    <ScrollView>
-      <View>
+      <View style={{flex: 1}}>
         <Header leftItem={
           <TouchableHighlight onPress={ () => { this.props.navigation.navigate('DeckSelect') } } >
             <Icon name={"book"} size={26} color={"white"} />
           </TouchableHighlight>
         } title="Study"/>
+        <ScrollView style={{paddingTop: 10}}>
         <View style={[ globalStyles.cardView ]}>
           <ProgressView selectedDeck={ this.state.selectedDeck } />
           <View style={globalStyles.separatorBright}></View>
@@ -125,8 +125,8 @@ class StudyOverview extends Component {
             </TouchableHighlight>
           </View>
         </View>
+        </ScrollView>
       </View>
-    </ScrollView>
   ) }
 }
 

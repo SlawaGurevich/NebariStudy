@@ -46,9 +46,12 @@ class DictionaryScreen extends Component {
     }
   ]
 
-  searchDictionary = (search) => {
+  changeText = (search) => {
     this.setState({searchString: search})
-    _dictionarySearch(search).then(docs => {
+  }
+
+  searchDictionary = () => {
+    _dictionarySearch(this.state.searchString).then(docs => {
       console.log(docs.docs)
       this.setState({results: docs.docs})
     }).catch(err => {console.log(err)})
@@ -60,7 +63,12 @@ class DictionaryScreen extends Component {
         <Header title="Dictionary"/>
         <View style={styles.searchInput}>
             <Icon size={16} name="search" color={Constants.c_ash_gray}/>
-            <TextInput ref={ (inp) => { this.input = inp; }} value={this.state.searchString} onChangeText={ (text) => { this.searchDictionary(text) } } style={ styles.searchInputText } placeholder="Search" />
+            <TextInput ref={ (inp) => { this.input = inp; }}
+                       value={this.state.searchString}
+                       onChangeText={ (text) => { this.changeText(text) } }
+                       onSubmitEditing={this.searchDictionary}
+                       style={ styles.searchInputText }
+                       placeholder="Search" />
             {this.state.searchString !== "" && <TouchableHighlight onPress={() => { this.setState({searchString: "", results:[] }); this.input.focus() } }>
               <Icon name="times-circle" size={20} />
             </TouchableHighlight>}

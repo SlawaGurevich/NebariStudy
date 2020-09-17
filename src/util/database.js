@@ -161,6 +161,15 @@ const _dictionarySearch = (search) => {
           },
           {
             meanings: {$elemMatch: search}
+          },
+          {
+            readings_on: {$regex: `${wanakana.toHiragana(search)}`}
+          },
+          {
+            readings_kun: {$regex: `${wanakana.toHiragana(search)}`}
+          },
+          {
+            readings: {$regex: `${wanakana.toHiragana(search)}`}
           }
         ]
       }
