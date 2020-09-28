@@ -1,7 +1,5 @@
 import React, { Component, createRef, useState } from 'react'
 
-import Swiper from 'react-native-deck-swiper'
-
 import { Button,
          StyleSheet,
          Text,
@@ -9,9 +7,12 @@ import { Button,
          TouchableWithoutFeedback,
          View } from 'react-native'
 
+import GLOBALS from '../../util/global'
+
 import Header from '../Header'
 
 import { SingleCard } from '../SingleCardView'
+import Swiper from '../Swiper'
 
 import { _uplevelCard, _downlevelCard } from '../../util/database'
 
@@ -37,31 +38,7 @@ class SwipeView extends Component {
   return (
     <View style={styles.mainView}>
       <Header leftItem={<TouchableHighlight onPress={() => { console.log("back"); this.navigation.goBack() }}><Text>Back</Text></TouchableHighlight>}/>
-      <Swiper style={styles.swiper} cards={this.route.params.data} ref={swiper => { this.swiper = swiper; }}
-              renderCard={(card, cardIndex) => {
-                return (
-                  <SingleCard word={card.entry}
-                              level={card.level}
-                              id={cardIndex}
-                              readings={card.wordtype == "Kanji" ? [card.readings_on, card.readings_kun] : card.readings}
-                              wordtype={card.wordtype}
-                              meanings={card.meanings}
-                              navigation={this.navigation}
-                              revealed={card.revealed || 0} />
-                )
-            }}
-            onSwiped={(cardIndex) => {console.log(cardIndex)}}
-            onTapCard={(cardIndex) => { this.swiper.state.cards[cardIndex].revealed=1; this.cardIndex = this.cardIndex+1; console.log(this.cardIndex) }}
-            onSwipedRight={(cardIndex) => { this.uplevelCard(this.route.params.data[cardIndex]) }}
-            onSwipedLeft={(cardIndex) => { this.downlevelCard(this.route.params.data[cardIndex]) }}
-            onSwipedAll={() => {console.log('onSwipedAll')}}
-            cardIndex={0}
-            backgroundColor={'transparent'}
-            stackSize= {2}
-            cardIndex={this.cardIndex}
-            >
-
-      </Swiper>
+      <Swiper navigation={this.navigation} deck={GLOBALS.WrapperState.state.selectedDeck}/>
     </View>
   )}
 }
@@ -72,7 +49,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
-    backgroundColor: "red"
+    backgroundColor: "pink"
   },
   swiper: {
     position: "absolute",
@@ -88,3 +65,30 @@ const styles = StyleSheet.create({
 });
 
 export default SwipeView
+
+      /* {<SwipeCards style={styles.swiper} cards={this.route.params.data} ref={swiper => { this.swiper = swiper; }}
+              renderCard={(card) => {
+                return (
+                  <SingleCard word={card.entry}
+                              level={card.level}
+
+                              readings={card.wordtype == "Kanji" ? [card.readings_on, card.readings_kun] : card.readings}
+                              wordtype={card.wordtype}
+                              meanings={card.meanings}
+                              navigation={this.navigation}
+                              revealed={card.revealed || 0} />
+                )
+            }}
+            onClickHandler={() => { console.log("click") }}
+            onSwiped={(cardIndex) => {console.log(cardIndex)}}
+            onTapCard={(cardIndex) => { this.swiper.state.cards[cardIndex].revealed=1; this.cardIndex = this.1cardIndex+1; console.log(this.cardIndex) }}
+            onSwipedRight={(cardIndex) => { this.uplevelCard(this.route.params.data[cardIndex]) }}
+            onSwipedLeft={(cardIndex) => { this.downlevelCard(this.route.params.data[cardIndex]) }}
+            onSwipedAll={() => {console.log('onSwipedAll')}}
+            cardIndex={0}
+            backgroundColor={'transparent'}
+            stackSize= {2}
+            cardIndex={this.cardIndex}
+            >
+
+      </SwipeCards>} */

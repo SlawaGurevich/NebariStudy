@@ -1,4 +1,5 @@
 import React, { Component, useEffect, useState } from 'react'
+import { withNavigationFocus } from "@react-navigation/native"
 
 import { Text,
          TouchableHighlight,
@@ -37,6 +38,12 @@ class StudyOverview extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.isFocused !== this.props.isFocused) {
+      this.calculatePercentage()
+    }
+  }
+
   updateDeck() {
     _getOption("SelectedDeck").then(doc => {
       this.setState({selectedDeck: doc.value})
@@ -45,8 +52,8 @@ class StudyOverview extends Component {
   }
 
   calculatePercentage() {
-    if ( this.state.selectedDeck ) {
-      let cards = this.state.selectedDeck.cardList
+    if ( GLOBALS.WrapperState.state.selectedDeck ) {
+      let cards = GLOBALS.WrapperState.state.selectedDeck.cardList
       let totalIterations = cards.length * 4
 
       let level2cards = cards.filter(card => card.level == 2).length
@@ -54,7 +61,7 @@ class StudyOverview extends Component {
       let level4cards = cards.filter(card => card.level == 4).length * 3
       let level5cards = cards.filter(card => card.level == 5).length * 4
 
-      let percent = level2cards + level3cards + level4cards + level5cards
+      let percent = Math.floor((level2cards + level3cards + level4cards + level5cards) / totalIterations)
       // console.log(percent)
 
       this.setState({percentage: percent})

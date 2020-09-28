@@ -3,6 +3,9 @@ import * as Constants from '../../constants/styleConstants'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as wanakana from 'wanakana';
 
+import Androw from 'react-native-androw'
+
+import globalStyles from '../../constants/globalStyles'
 
 import {
   Text,
@@ -56,11 +59,11 @@ const SingleCard = (props) => {
   }
 
   return (
-      <View style={styles.container}>
+      <Androw style={[styles.container, globalStyles.cardShadowDefault]}>
         <View style={[styles.header, {backgroundColor: color}]}>
           <Text style={styles.headerText}>{props.id}</Text>
         </View>
-        <ScrollView>
+        <ScrollView style={{backgroundColor: "white", borderBottomLeftRadius: 6, borderBottomRightRadius: 6}}>
           <View style={styles.content}>
             { props.wordtype == "Kanji" ?
               <View style={styles.kanjiView}>
@@ -166,7 +169,7 @@ const SingleCard = (props) => {
           </View>
         </View>
         </ScrollView>
-      </View>
+      </Androw>
   )
 }
 
@@ -197,17 +200,8 @@ let styles = StyleSheet.create({
     right: 20,
     bottom: 20,
     left: 20,
-    backgroundColor: "white",
     borderRadius: 6,
-    overflow: "hidden",
-    shadowColor: "#eeeeee",
-    shadowOffset: {
-      width: 7,
-      height: 7,
-    },
-    shadowOpacity: .1,
-    shadowRadius: 4,
-    elevation: 15,
+    overflow: "hidden"
   },
   header: {
     display: "flex",

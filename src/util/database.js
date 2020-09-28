@@ -32,6 +32,13 @@ const _getDecks = () => {
   })
 }
 
+const _updateDeck = (deck) => {
+  return _getDeck(deck.name).then((doc) => {
+    doc.cardList = deck.cardList
+    return db.put(doc)
+  })
+}
+
 const _getDeck = (name) => {
   return db.get("Deck"+name)
 }
@@ -260,6 +267,7 @@ export {  _addCard,
           _downlevelCard,
           _getOption,
           _addDeck,
+          _updateDeck,
           _deleteDeck,
           _getDecks,
           _getDeck,

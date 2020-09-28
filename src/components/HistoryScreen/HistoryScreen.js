@@ -1,7 +1,5 @@
 import React from 'react'
 
-import Swiper from 'react-native-deck-swiper'
-
 import {
   StyleSheet,
   View,
