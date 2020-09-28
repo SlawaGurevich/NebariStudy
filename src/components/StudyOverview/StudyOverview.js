@@ -5,6 +5,9 @@ import { Text,
          View,
          ScrollView,
          StyleSheet} from 'react-native'
+
+import Androw from 'react-native-androw'
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Header from '../Header'
@@ -12,6 +15,7 @@ import Header from '../Header'
 import GLOBALS from '../../util/global'
 
 import globalStyles from '../../constants/globalStyles'
+import * as Constants from '../../constants/styleConstants'
 
 import ProgressBar from '../ProgressBar'
 import ProgressView from '../ProgressView'
@@ -70,61 +74,67 @@ class StudyOverview extends Component {
             <Icon name={"book"} size={26} color={"white"} />
           </TouchableHighlight>
         } title="Study"/>
-        <ScrollView style={{paddingTop: 10}}>
-        <View style={[ globalStyles.cardView ]}>
-          <ProgressView selectedDeck={ this.state.selectedDeck } />
-          <View style={globalStyles.separatorBright}></View>
-          <ProgressBar progress={ this.state.percentage }/>
-          <TouchableHighlight style={globalStyles.buttonActive} onPress={() => this.props.navigation.navigate('SwipeView', {
-            data: this.state.selectedDeck.cardList
-          })}>
-            <Text style={{ color: "white" }}>Start studying</Text>
-          </TouchableHighlight>
-        </View>
-        <View style={globalStyles.cardView}>
-          <View style={ globalStyles.cardViewListItem }>
-            <Text style={ globalStyles.cardViewListItemLeft }>Studied today:</Text>
-            <Text style={ globalStyles.cardViewListItemRight }>30m</Text>
+        <ScrollView>
+          <Androw style={[globalStyles.cardShadowDefault, {paddingTop: 10}]}>
+            <View style={[ globalStyles.cardView ]}>
+              <ProgressView selectedDeck={ this.state.selectedDeck } />
+              <View style={globalStyles.separatorBright}></View>
+              <ProgressBar progress={ this.state.percentage }/>
+              <TouchableHighlight style={globalStyles.buttonActive} onPress={() => this.props.navigation.navigate('SwipeView', {
+                data: this.state.selectedDeck.cardList
+              })}>
+              <Text style={{ color: "white" }}>Start studying</Text>
+            </TouchableHighlight>
           </View>
-          <View style={ globalStyles.cardViewSeparator }></View>
-          <View style={ globalStyles.cardViewListItem }>
-            <Text style={ globalStyles.cardViewListItemLeft }>Studied total:</Text>
-            <Text style={ globalStyles.cardViewListItemRight }>20h 30m</Text>
-          </View>
-          <View style={ globalStyles.cardViewSeparator }></View>
-          <View style={ globalStyles.cardViewListItem }>
-            <Text style={ globalStyles.cardViewListItemLeft }>Studied this deck:</Text>
-            <Text style={ globalStyles.cardViewListItemRight }>1h 13m</Text>
-          </View>
-        </View>
-        <View style={[globalStyles.cardView, {flexDirection: "row" }]}>
-          <View style={styles.daysToGo}>
-            <Text style={{ color: "white", fontSize: 45, fontWeight: "600"}}>65</Text>
-            <Text style={{ color: "white", fontSize: fz_sm, fontWeight: "700" }}>days to go</Text>
-          </View>
-          <View style={ styles.daysToGoView }>
+        </Androw>
+        <Androw style={globalStyles.cardShadowDefault} >
+          <View style={globalStyles.cardView}>
             <View style={ globalStyles.cardViewListItem }>
-              <Text style={ globalStyles.cardViewListItemLeft }>Left to study:</Text>
-              <Text style={ globalStyles.cardViewListItemRight }>34</Text>
+              <Text style={ globalStyles.cardViewListItemLeft }>Studied today:</Text>
+              <Text style={ globalStyles.cardViewListItemRight }>30m</Text>
             </View>
             <View style={ globalStyles.cardViewSeparator }></View>
             <View style={ globalStyles.cardViewListItem }>
-              <Text style={ globalStyles.cardViewListItemLeft }>Study per day:</Text>
-              <Text style={ globalStyles.cardViewListItemRight }>65</Text>
+              <Text style={ globalStyles.cardViewListItemLeft }>Studied total:</Text>
+              <Text style={ globalStyles.cardViewListItemRight }>20h 30m</Text>
             </View>
             <View style={ globalStyles.cardViewSeparator }></View>
             <View style={ globalStyles.cardViewListItem }>
               <Text style={ globalStyles.cardViewListItemLeft }>Studied this deck:</Text>
-              <Text style={ globalStyles.cardViewListItemRight }>1 day ago</Text>
+              <Text style={ globalStyles.cardViewListItemRight }>1h 13m</Text>
             </View>
           </View>
-          <View style={ styles.daysToGoDisabled }>
-            <Text style={{ marginBottom: 10 }}>No due date set.</Text>
-            <TouchableHighlight style={[globalStyles.buttonActive, {width: 160}]}>
-              <Text style={{ color: "white" }}>set one now</Text>
-            </TouchableHighlight>
+        </Androw>
+        <Androw style={globalStyles.cardShadowDefault} >
+          <View style={[globalStyles.cardView, {flexDirection: "row" }]}>
+            <View style={styles.daysToGo}>
+              <Text style={{ color: "white", fontSize: 45, fontWeight: "600"}}>65</Text>
+              <Text style={{ color: "white", fontSize: fz_sm, fontWeight: "700" }}>days to go</Text>
+            </View>
+            <View style={ styles.daysToGoView }>
+              <View style={ globalStyles.cardViewListItem }>
+                <Text style={ globalStyles.cardViewListItemLeft }>Left to study:</Text>
+                <Text style={ globalStyles.cardViewListItemRight }>34</Text>
+              </View>
+              <View style={ globalStyles.cardViewSeparator }></View>
+              <View style={ globalStyles.cardViewListItem }>
+                <Text style={ globalStyles.cardViewListItemLeft }>Study per day:</Text>
+                <Text style={ globalStyles.cardViewListItemRight }>65</Text>
+              </View>
+              <View style={ globalStyles.cardViewSeparator }></View>
+              <View style={ globalStyles.cardViewListItem }>
+                <Text style={ globalStyles.cardViewListItemLeft }>Studied this deck:</Text>
+                <Text style={ globalStyles.cardViewListItemRight }>1 day ago</Text>
+              </View>
+            </View>
+            <View style={ styles.daysToGoDisabled }>
+              <Text style={{ marginBottom: 10 }}>No due date set.</Text>
+              <TouchableHighlight style={[globalStyles.buttonActive, {width: 160}]}>
+                <Text style={{ color: "white" }}>set one now</Text>
+              </TouchableHighlight>
+            </View>
           </View>
-        </View>
+        </Androw>
         </ScrollView>
       </View>
   ) }

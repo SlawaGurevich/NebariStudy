@@ -8,6 +8,9 @@ import {  Dimensions,
           TouchableHighlight,
           View } from 'react-native'
 
+
+import Androw from 'react-native-androw'
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
@@ -19,6 +22,7 @@ import StickyThumb from './StickyThumb'
 import * as wanakana from 'wanakana';
 
 import globalStyles from '../../constants/globalStyles'
+import * as styleConstants from '../../constants/styleConstants'
 
 import { _getOption, _getDeck, _getCardsFromDeck } from '../../util/database'
 
@@ -59,16 +63,20 @@ const BrowseScreen = ({navigation}) => {
                   itemDimension={cardSize}
                   contentContainerStyle={{paddingBottom: 100}}
                   renderItem={ ({ item, index }) => (
-                    <TouchableHighlight onPress={() => { navigation.navigate("SingleCardView", {
-                      word: item.entry,
-                      level: item.level,
-                      id: index,
-                      readings: item.wordtype == "Kanji" ? [item.readings_on, item.readings_kun] : item.readings,
-                      wordtype: item.wordtype,
-                      meanings: item.meanings
-                    }) }} >
-                      <StickyThumb id={index} readings={item.wordtype == "Kanji" ? (item.readings_kun[0] || wanakana.toKatakana(item.readings_on[0]) ) : wanakana.tokenize(item.readings).filter(word => wanakana.isHiragana(word) ) } meanings={item.meanings} word={item.entry} level={item.level} />
-                    </TouchableHighlight>
+                    <Androw style={styles.shadow}>
+                      <TouchableHighlight onPress={() => { navigation.navigate("SingleCardView", {
+                        word: item.entry,
+                        level: item.level,
+                        id: index,
+                        readings: item.wordtype == "Kanji" ? [item.readings_on, item.readings_kun] : item.readings,
+                        wordtype: item.wordtype,
+                        meanings: item.meanings,
+                        revealed: 1,
+                        previous: "Browse"
+                      }) }} >
+                        <StickyThumb id={index} readings={item.wordtype == "Kanji" ? (item.readings_kun[0] || wanakana.toKatakana(item.readings_on[0]) ) : wanakana.tokenize(item.readings).filter(word => wanakana.isHiragana(word) ) } meanings={item.meanings} word={item.entry} level={item.level} />
+                      </TouchableHighlight>
+                    </Androw>
                    ) }
                    /> : <View style={[ globalStyles.loadingView, {marginBottom: 100} ]}><Text style={{color: "gray"}}>Loading...</Text></View> }
       </View>
@@ -83,6 +91,15 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "flex-start",
     alignItems: "flex-start"
+  },
+  shadow: {
+    shadowColor: styleConstants.c_coral,
+    shadowOffset:{
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: .4,
+    shadowRadius: 4
   }
 })
 

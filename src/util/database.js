@@ -104,6 +104,26 @@ const _getCardsFromDeck = (deck) => {
   })
 }
 
+const _uplevelCard = (id) => {
+  return db.get(id).then((doc) => {
+    doc.level = doc.level < 5 ? doc.level + 1 : doc.level
+
+    db.put(doc)
+    console.log(doc)
+  })
+}
+
+const _downlevelCard = (id) => {
+  return db.get(id).then((doc) => {
+    doc.level = doc.level < 2 ? doc.level : doc.level - 1
+
+    db.put(doc)
+    console.log(doc)
+  })
+}
+
+// Options
+
 const _setOption = (name, kind, value) => {
   return db.upsert("Option"+name, (doc) => {
     doc.kind = kind
@@ -113,8 +133,6 @@ const _setOption = (name, kind, value) => {
     return doc
   })
 }
-
-// Options
 
 const _getOption = (name) => {
   return db.get("Option"+name)
@@ -238,6 +256,8 @@ export {  _addCard,
           _getCard,
           _getCards,
           _getRelatedCards,
+          _uplevelCard,
+          _downlevelCard,
           _getOption,
           _addDeck,
           _deleteDeck,

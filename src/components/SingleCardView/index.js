@@ -1,4 +1,5 @@
 
-import SingleCardView from './SingleCardView'
+import SingleCardView, { SingleCard } from './SingleCardView'
 
 export default SingleCardView
+export { SingleCard }

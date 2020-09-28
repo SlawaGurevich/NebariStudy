@@ -14,28 +14,30 @@ import {
 
 import { _getCards, _getRelatedCards } from '../../util/database'
 
-
-const SingleCardView = ({ route, navigation }) => {
+const SingleCard = (props) => {
   let color
   const [kanji, setKanji] = useState([])
   const [related, setRelated] = useState([])
+  const [revealed, setRevealed] = useState(0)
 
   useEffect(() => {
-    let usedKanji = route.params.word.split("").filter(char => wanakana.isKanji(char))
+    let usedKanji = props.word.split("").filter(char => wanakana.isKanji(char))
     _getCards(usedKanji).then(kn => {
       setKanji(kn.docs)
     })
     .catch(err => { console.log(err) })
 
-    if (route.params.wordtype == "Kanji") {
-      _getRelatedCards(route.params.word, 5).then(related => {
+    if (props.wordtype == "Kanji") {
+      _getRelatedCards(props.word, 5).then(related => {
         console.log(related)
         setRelated(related.docs)
       }).catch(err => {console.log(err)})
     }
+
+    setRevealed(props.revealed || 0)
   }, [])
 
-  switch (route.params.level) {
+  switch (props.level) {
     case 1:
       color = Constants.c_level1
       break;
@@ -54,78 +56,82 @@ const SingleCardView = ({ route, navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+      <View style={styles.container}>
         <View style={[styles.header, {backgroundColor: color}]}>
-          <Text style={styles.headerText}>{route.params.id}</Text>
+          <Text style={styles.headerText}>{props.id}</Text>
         </View>
         <ScrollView>
-        <View style={styles.content}>
-          { route.params.wordtype == "Kanji" ?
-            <View style={styles.kanjiView}>
-              <Text style={styles.contentText}>{route.params.word}</Text>
-              <View style={{flexShrink: 1, marginLeft: 0}}>
-                <Text style={[styles.readingText, {textAlign: "left", color: Constants.c_ming}]}>{wanakana.toKatakana( route.params.readings[0].join(", ") )}</Text>
-                <Text style={[styles.readingText, {textAlign: "left", color: Constants.c_coral}]}>{route.params.readings[1].join(", ")}</Text>
-              </View>
-            </View>
-            :
-            <View>
-              <Text style={styles.contentText} numberOfLines={1} adjustsFontSizeToFit={true}>{route.params.word}</Text>
-              <Text style={styles.readingText}>{wanakana.tokenize(route.params.readings).filter(word => wanakana.isHiragana(word)) }</Text>
-            </View>
-          }
-          <Text style={styles.meaningText}>
-            {route.params.meanings.join(", ")}
-          </Text>
-        </View>
-        { route.params.wordtype == "Vocab" && <View style={styles.section}>
-          <View>
-            <Text style={styles.headline}>Kanji</Text>
-          </View>
-          { kanji.length > 0 ? kanji.map((card, i) => (
-            <TouchableWithoutFeedback key={i} onPress={() => { navigation.push("SingleCardView", {
-                word: card.entry,
-                level: card.level,
-                id: card.entry,
-                readings: [card.readings_on, card.readings_kun],
-                wordtype: card.wordtype,
-                meanings: card.meanings
-              }) }}>
-              <View style={styles.sectionEntry}>
-                <Text style={sectionStyles.kanji}>{card.entry}</Text>
-                <View style={{flexGrow: 1, flexShrink: 1}}>
-                  <View style={{display: "flex", flexDirection: "row"}}>
-                    <Text numberOfLines={1} style={{fontWeight: "700",
-                                                    color: Constants.c_ming }}>
-                      { card.readings_on && card.readings_on.map(k => wanakana.toKatakana(k)).join("、") }
-                    </Text>
-                    <Text numberOfLines={1} style={{fontWeight: "700",
-                                  color: Constants.c_coral,
-                                  marginLeft: 10,
-                                  flexShrink: 1
-                                  }}>
-                      { card.readings_kun && card.readings_kun.join("、") }
-                    </Text>
-                  </View>
-                  <Text numberOfLines={1} style={styles.sectionEntryMeanings}>{ card.meanings.join(", ") }</Text>
+          <View style={styles.content}>
+            { props.wordtype == "Kanji" ?
+              <View style={styles.kanjiView}>
+                <Text style={styles.contentText}>{props.word}</Text>
+                <View style={{ flexShrink: 1, marginLeft: 0, display: revealed ? "flex" : "none" }}>
+                  <Text style={[styles.readingText, {textAlign: "left", color: Constants.c_ming}]}>{wanakana.toKatakana( props.readings[0].join(", ") )}</Text>
+                  <Text style={[styles.readingText, {textAlign: "left", color: Constants.c_coral}]}>{props.readings[1].join(", ")}</Text>
                 </View>
-                <Icon style={{ marginLeft: 5 }} name="angle-right" size={20} color={ Constants.c_ash_gray } />
               </View>
-            </TouchableWithoutFeedback>
-          )) : <View style={[styles.sectionEntry, {borderBottomWidth: 0}]}><Text style={{color: Constants.c_light_gray}}>Loading...</Text></View>}
-        </View> }
-        { route.params.wordtype == "Kanji" && <View style={styles.section}>
+              :
+              <View>
+                <Text style={styles.contentText} numberOfLines={1} adjustsFontSizeToFit={true}>{props.word}</Text>
+                <Text style={[styles.readingText, { display: revealed ? "flex" : "none" }]}>{wanakana.tokenize(props.readings).filter(word => wanakana.isHiragana(word)) }</Text>
+              </View>
+            }
+            <Text style={[styles.meaningText, { display: revealed ? "flex" : "none" }]}>
+              {props.meanings.join(", ")}
+            </Text>
+          </View>
+          { props.wordtype == "Vocab" && <View style={[styles.section, { display: revealed ? "flex" : "none" }]}>
+            <View>
+              <Text style={styles.headline}>Kanji</Text>
+            </View>
+            { kanji.length > 0 ? kanji.map((card, i) => (
+              <TouchableWithoutFeedback key={i} onPress={() => { props.navigation.push("SingleCardView", {
+                  word: card.entry,
+                  level: card.level,
+                  id: card.entry,
+                  readings: [card.readings_on, card.readings_kun],
+                  wordtype: card.wordtype,
+                  meanings: card.meanings,
+                  previous: props.word,
+                  revealed: 1
+                }) }}>
+                <View style={styles.sectionEntry}>
+                  <Text style={sectionStyles.kanji}>{card.entry}</Text>
+                  <View style={{flexGrow: 1, flexShrink: 1}}>
+                    <View style={{display: "flex", flexDirection: "row"}}>
+                      <Text numberOfLines={1} style={{fontWeight: "700",
+                                                      color: Constants.c_ming }}>
+                        { card.readings_on && card.readings_on.map(k => wanakana.toKatakana(k)).join("、") }
+                      </Text>
+                      <Text numberOfLines={1} style={{fontWeight: "700",
+                                    color: Constants.c_coral,
+                                    marginLeft: 10,
+                                    flexShrink: 1
+                                    }}>
+                        { card.readings_kun && card.readings_kun.join("、") }
+                      </Text>
+                    </View>
+                    <Text numberOfLines={1} style={styles.sectionEntryMeanings}>{ card.meanings.join(", ") }</Text>
+                  </View>
+                  <Icon style={{ marginLeft: 5 }} name="angle-right" size={20} color={ Constants.c_ash_gray } />
+                </View>
+              </TouchableWithoutFeedback>
+            )) : <View style={[styles.sectionEntry, {borderBottomWidth: 0}]}><Text style={{color: Constants.c_light_gray}}>Loading...</Text></View>}
+          </View> }
+        { props.wordtype == "Kanji" && <View style={[styles.section, { display: revealed ? "flex" : "none" }]}>
           <View>
             <Text style={styles.headline}>Related</Text>
           </View>
           { related.length > 0 ? related.map( (card, i) => (
-            <TouchableWithoutFeedback key={i} onPress={() => { navigation.push("SingleCardView", {
+            <TouchableWithoutFeedback key={i} onPress={() => { props.navigation.push("SingleCardView", {
               word: card.entry,
               level: card.level,
               id: card.entry,
               readings: card.readings,
               wordtype: card.wordtype,
-              meanings: card.meanings
+              meanings: card.meanings,
+              previous: props.word,
+              revealed: 1
             }) }}>
               <View style={styles.sectionEntry}>
                 <Text style={[sectionStyles.kanji, {fontSize: 26}]}>{card.entry}</Text>
@@ -145,7 +151,7 @@ const SingleCardView = ({ route, navigation }) => {
             </TouchableWithoutFeedback>
           )) : <View style={[styles.sectionEntry, {borderBottomWidth: 0}]}><Text style={{color: Constants.c_light_gray}}>Loading...</Text></View>}
         </View> }
-        <View style={styles.section}>
+        <View style={[styles.section, { display: revealed ? "flex" : "none" }]}>
           <View>
             <Text style={styles.headline}>Stats</Text>
           </View>
@@ -160,7 +166,20 @@ const SingleCardView = ({ route, navigation }) => {
           </View>
         </View>
         </ScrollView>
-    </View>
+      </View>
+  )
+}
+
+const SingleCardView = ({ route, navigation }) => {
+  return (
+    <SingleCard word={route.params.word}
+                level={route.params.level}
+                id={route.params.id}
+                readings={route.params.readings}
+                wordtype={route.params.wordtype}
+                meanings={route.params.meanings}
+                revealed={route.params.revealed}
+                navigation={navigation} />
   )
 }
 
@@ -265,3 +284,4 @@ let styles = StyleSheet.create({
 })
 
 export default SingleCardView
+export { SingleCard }

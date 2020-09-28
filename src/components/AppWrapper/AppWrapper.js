@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 import GLOBAL from '../../util/global'
 
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -33,7 +33,6 @@ const Tab = createBottomTabNavigator();
 function HomeScreen() {
   return (
     <Tab.Navigator
-      backgroundColor="red"
         screenOptions={({ route }) => ({
           tabBarVisible: route.name !== "SwipeView",
           tabBarIcon: ({ focused, color, size }) => {
@@ -93,16 +92,28 @@ class AppWrapper extends Component {
     }).catch(err => { console.log(err) })
   }
 
+  MyTheme = {
+    dark: false,
+    colors: {
+      primary: 'rgb(255, 45, 85)',
+      background: 'rgb(255, 255, 255)',
+      card: 'rgb(255, 255, 255)',
+      text: 'rgb(28, 28, 30)',
+      border: 'rgb(199, 199, 204)',
+      notification: 'rgb(255, 69, 58)',
+    },
+  };
+
   render() {
     return (
-      GLOBAL.loaded ? <NavigationContainer>
+      GLOBAL.loaded ? <NavigationContainer theme={this.MyTheme}>
         <StatusBar backgroundColor={Constants.c_sage} />
 
         <Stack.Navigator screenOptions={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
         }}>
           <Stack.Screen name="Home" options={{headerShown: false}} component={HomeScreen} />
-          <Stack.Screen name="SingleCardView" component={SingleCardView} options={({ route }) => ({ title: route.params.word + " " + route.params.meanings.join(", ") })}/>
+          <Stack.Screen name="SingleCardView" component={SingleCardView} options={({ route }) => ({ title: route.params.previous })}/>
           <Stack.Screen name="SwipeView" options={{headerShown: false}} component={SwipeView} />
           <Stack.Screen name="SubOptionsScreen" component={SubOptionsScreen} options={({ route }) => ({ title: route.params.title })} />
           <Stack.Screen name="DeckSelect" component={DeckSelect} options={{headerShown: false}} />

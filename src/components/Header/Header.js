@@ -16,7 +16,7 @@ const Header = ({leftItem, title, rightItem}) => {
   return (
     <View style={styles.header}>
       { leftItem ? leftItem : <Placeholder /> }
-      { title ? <Text style={{fontWeight: "bold", color: "white"}}>{title}</Text> : <Placeholder /> }
+      { title ? <Text style={{fontWeight: "bold", color: "#000"}}>{title}</Text> : <Placeholder /> }
       { rightItem ? rightItem : <Placeholder /> }
     </View>
   )
@@ -28,11 +28,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    height: 50,
+    height: 60,
     flexBasis: 50,
-    backgroundColor: Constants.c_coral,
+    backgroundColor: "white",
     paddingHorizontal: 10,
     paddingVertical: 20,
+    shadowColor: "#eeeeee",
+    shadowOffset: {
+      width: 7,
+      height: 7,
+    },
+    shadowOpacity: .1,
+    shadowRadius: 4,
+    elevation: 15,
   },
   placeholder: {
     width: 20,

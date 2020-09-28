@@ -46,14 +46,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     overflow: "hidden",
     backgroundColor: "white",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: .05,
-    shadowRadius: 2,
-    elevation: 6,
   },
   header: {
     width: "100%",

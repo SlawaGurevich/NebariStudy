@@ -9,20 +9,12 @@ const globalStyles = StyleSheet.create({
     overflow: "scroll"
   },
   cardView: {
-    marginBottom: 10,
+    marginBottom: 20,
     marginHorizontal: 10,
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: "white",
     overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: .1,
-    shadowRadius: 4,
-    elevation: 5,
   },
   cardViewListItem: {
     display: "flex",
@@ -64,6 +56,15 @@ const globalStyles = StyleSheet.create({
     height: 1,
     marginVertical: 10,
     backgroundColor: Constants.c_light_gray
+  },
+  cardShadowDefault: {
+    shadowColor: Constants.c_coral,
+    shadowOffset:{
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: .4,
+    shadowRadius: 4
   }
 })
 
