@@ -4,6 +4,7 @@ import { Animated,
          PanResponder,
          StyleSheet,
          Text,
+         TouchableWithoutFeedback,
          View  } from 'react-native'
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -35,7 +36,7 @@ class Swiper extends Component {
       data: props.cards || {},
       currentCard: props.deck.cardList[0],
       nextCard: props.deck.cardList[1],
-      revealed: 1,
+      revealed: 0,
     }
 
     console.log(this.state.currentCard)
@@ -50,6 +51,7 @@ class Swiper extends Component {
       _updateDeck(currentDeck).then(() => {
         console.log("deck updated")
       })
+      this.setState({revealed: 0})
       this.getNextCard()
     }
 
@@ -143,26 +145,30 @@ class Swiper extends Component {
   render() {
     return (
       <View style={{flex:1, position: "absolute", width: "100%", height: "100%"}}>
-          <Animated.View
-            {...this.PanResponder.panHandlers}
-            style={[ {position: "relative", zIndex: 999}, this.rotateAndTranslate, styles.card]}
-          >
-            <View style={{flex: 1}}>
-              <SingleCard word={this.state.currentCard.entry}
-                              level={this.state.currentCard.level}
+            <Animated.View
+              {...this.PanResponder.panHandlers}
+              style={[ {position: "relative", zIndex: 999}, this.rotateAndTranslate, styles.card]}
+            >
 
-                              readings={this.state.currentCard.wordtype == "Kanji" ? [this.state.currentCard.readings_on, this.state.currentCard.readings_kun] : this.state.currentCard.readings}
-                              wordtype={this.state.currentCard.wordtype}
-                              meanings={this.state.currentCard.meanings}
-                              navigation={this.navigation}
-                              revealed={this.state.revealed || 0} />
-            </View>
-            <Animated.View style={[styles.cross, { opacity: this.nopeOpacity }]}>
-              <Icon name="close" size={36} color={"red"} />
-            </Animated.View>
-            <Animated.View style={[styles.checkmark, { opacity: this.yepOpacity } ]} >
-              <Icon name="check" size={36} color={"green"}/>
-            </Animated.View>
+                <TouchableWithoutFeedback onPress={() => {this.setState({revealed: 1})}}>
+                  <View  style={{flex: 1}}>
+                    <SingleCard word={this.state.currentCard.entry}
+                                    level={this.state.currentCard.level}
+
+                                    readings={this.state.currentCard.wordtype == "Kanji" ? [this.state.currentCard.readings_on, this.state.currentCard.readings_kun] : this.state.currentCard.readings}
+                                    wordtype={this.state.currentCard.wordtype}
+                                    meanings={this.state.currentCard.meanings}
+                                    navigation={this.navigation}
+                                    revealed={this.state.revealed} />
+
+                    <Animated.View style={[styles.cross, { opacity: this.nopeOpacity }]}>
+                      <Icon name="close" size={36} color={"red"} />
+                    </Animated.View>
+                    <Animated.View style={[styles.checkmark, { opacity: this.yepOpacity } ]} >
+                      <Icon name="check" size={36} color={"green"}/>
+                    </Animated.View>
+                  </View>
+                </TouchableWithoutFeedback>
           </Animated.View>
 
 
@@ -178,7 +184,7 @@ class Swiper extends Component {
                               wordtype={this.state.nextCard.wordtype}
                               meanings={this.state.nextCard.meanings}
                               navigation={this.navigation}
-                              revealed={this.state.revealed || 0} />
+                              revealed={0} />
           </Animated.View>
         </View>
         )

@@ -21,7 +21,6 @@ const SingleCard = (props) => {
   let color
   const [kanji, setKanji] = useState([])
   const [related, setRelated] = useState([])
-  const [revealed, setRevealed] = useState(0)
 
   useEffect(() => {
     let usedKanji = props.word.split("").filter(char => wanakana.isKanji(char))
@@ -36,8 +35,6 @@ const SingleCard = (props) => {
         setRelated(related.docs)
       }).catch(err => {console.log(err)})
     }
-
-    setRevealed(props.revealed || 0)
   }, [])
 
   switch (props.level) {
@@ -68,7 +65,7 @@ const SingleCard = (props) => {
             { props.wordtype == "Kanji" ?
               <View style={styles.kanjiView}>
                 <Text style={styles.contentText}>{props.word}</Text>
-                <View style={{ flexShrink: 1, marginLeft: 0, display: revealed ? "flex" : "none" }}>
+                <View style={{ flexShrink: 1, marginLeft: 0, display: props.revealed ? "flex" : "none" }}>
                   <Text style={[styles.readingText, {textAlign: "left", color: Constants.c_ming}]}>{wanakana.toKatakana( props.readings[0].join(", ") )}</Text>
                   <Text style={[styles.readingText, {textAlign: "left", color: Constants.c_coral}]}>{props.readings[1].join(", ")}</Text>
                 </View>
@@ -76,14 +73,14 @@ const SingleCard = (props) => {
               :
               <View>
                 <Text style={styles.contentText} numberOfLines={1} adjustsFontSizeToFit={true}>{props.word}</Text>
-                <Text style={[styles.readingText, { display: revealed ? "flex" : "none" }]}>{wanakana.tokenize(props.readings).filter(word => wanakana.isHiragana(word)) }</Text>
+                <Text style={[styles.readingText, { display: props.revealed ? "flex" : "none" }]}>{wanakana.tokenize(props.readings).filter(word => wanakana.isHiragana(word)) }</Text>
               </View>
             }
-            <Text style={[styles.meaningText, { display: revealed ? "flex" : "none" }]}>
+            <Text style={[styles.meaningText, { display: props.revealed ? "flex" : "none" }]}>
               {props.meanings.join(", ")}
             </Text>
           </View>
-          { props.wordtype == "Vocab" && <View style={[styles.section, { display: revealed ? "flex" : "none" }]}>
+          { props.wordtype == "Vocab" && <View style={[styles.section, { display: props.revealed ? "flex" : "none" }]}>
             <View>
               <Text style={styles.headline}>Kanji</Text>
             </View>
@@ -121,7 +118,7 @@ const SingleCard = (props) => {
               </TouchableWithoutFeedback>
             )) : <View style={[styles.sectionEntry, {borderBottomWidth: 0}]}><Text style={{color: Constants.c_light_gray}}>Loading...</Text></View>}
           </View> }
-        { props.wordtype == "Kanji" && <View style={[styles.section, { display: revealed ? "flex" : "none" }]}>
+        { props.wordtype == "Kanji" && <View style={[styles.section, { display: props.revealed ? "flex" : "none" }]}>
           <View>
             <Text style={styles.headline}>Related</Text>
           </View>
@@ -154,7 +151,7 @@ const SingleCard = (props) => {
             </TouchableWithoutFeedback>
           )) : <View style={[styles.sectionEntry, {borderBottomWidth: 0}]}><Text style={{color: Constants.c_light_gray}}>Loading...</Text></View>}
         </View> }
-        <View style={[styles.section, { display: revealed ? "flex" : "none" }]}>
+        <View style={[styles.section, { display: props.revealed ? "flex" : "none" }]}>
           <View>
             <Text style={styles.headline}>Stats</Text>
           </View>

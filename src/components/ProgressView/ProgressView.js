@@ -48,7 +48,7 @@ class ProgressView extends Component {
       // console.log("cards")
       // console.log(cards.map(ca => ca.level))
 
-      cardLevels.level1 = cards.filter(card => card.level == 1 || !card.level).length
+      cardLevels.level1 = cards.filter(card => card.level == 1 || card.level == null).length
       cardLevels.level2 = cards.filter(card => card.level == 2).length
       cardLevels.level3 = cards.filter(card => card.level == 3).length
       cardLevels.level4 = cards.filter(card => card.level == 4).length

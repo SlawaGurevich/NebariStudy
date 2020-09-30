@@ -41,6 +41,7 @@ class StudyOverview extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.isFocused !== this.props.isFocused) {
       this.calculatePercentage()
+      this.progressView.forceUpdate()
     }
   }
 
@@ -84,11 +85,11 @@ class StudyOverview extends Component {
         <ScrollView>
           <Androw style={[globalStyles.cardShadowDefault, {paddingTop: 10}]}>
             <View style={[ globalStyles.cardView ]}>
-              <ProgressView selectedDeck={ this.state.selectedDeck } />
+              <ProgressView selectedDeck={ GLOBALS.WrapperState.state.selectedDeck } />
               <View style={globalStyles.separatorBright}></View>
               <ProgressBar progress={ this.state.percentage }/>
               <TouchableHighlight style={globalStyles.buttonActive} onPress={() => this.props.navigation.navigate('SwipeView', {
-                data: this.state.selectedDeck.cardList
+                data: GLOBALS.WrapperState.state.selectedDeck.cardList
               })}>
               <Text style={{ color: "white" }}>Start studying</Text>
             </TouchableHighlight>
