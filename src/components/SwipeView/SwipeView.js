@@ -20,9 +20,11 @@ import globalStyles from '../../constants/globalStyles'
 
 class SwipeView extends Component {
   constructor (props) {
-    super(props)
+    super()
     this.route = props.route
     this.navigation = props.navigation
+    this.data = props.route.params.deck
+
     this.cardIndex = 0
   }
 
@@ -38,7 +40,7 @@ class SwipeView extends Component {
   return (
     <View style={styles.mainView}>
       <Header leftItem={<TouchableHighlight onPress={() => { console.log("back"); this.navigation.goBack() }}><Text>Back</Text></TouchableHighlight>}/>
-      <Swiper navigation={this.navigation} deck={GLOBALS.WrapperState.state.selectedDeck}/>
+      <Swiper navigation={this.navigation} deck={this.data}/>
     </View>
   )}
 }

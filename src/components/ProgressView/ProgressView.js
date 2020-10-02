@@ -9,6 +9,8 @@ import _ from "lodash"
 
 import * as Constants from '../../constants/styleConstants'
 
+import GLOBALS from '../../util/global'
+
 import { _getDeck, _getOption, _getCardsFromDeck } from '../../util/database'
 
 const Column = ({color, percent, stickies}) => {
@@ -40,29 +42,29 @@ class ProgressView extends Component {
   }
 
   getNumberOfCardsByLevel() {
-    let cards = this.props.selectedDeck ? this.props.selectedDeck.cardList : []
+    _getDeck(GLOBALS.WrapperState.state.selectedDeck).then(doc => {
+      let cards = doc.cardList
 
-    if ( cards.length > 0 ){
-      let cardLevels = {}
+      if ( cards.length > 0 ){
+        let cardLevels = {}
 
-      // console.log("cards")
-      // console.log(cards.map(ca => ca.level))
+        cardLevels.level1 = cards.filter(card => card.level == 1 || card.level == null).length
+        cardLevels.level2 = cards.filter(card => card.level == 2).length
+        cardLevels.level3 = cards.filter(card => card.level == 3).length
+        cardLevels.level4 = cards.filter(card => card.level == 4).length
+        cardLevels.level5 = cards.filter(card => card.level == 5).length
+        cardLevels.total = cards.length || 0
 
-      cardLevels.level1 = cards.filter(card => card.level == 1 || card.level == null).length
-      cardLevels.level2 = cards.filter(card => card.level == 2).length
-      cardLevels.level3 = cards.filter(card => card.level == 3).length
-      cardLevels.level4 = cards.filter(card => card.level == 4).length
-      cardLevels.level5 = cards.filter(card => card.level == 5).length
-      cardLevels.total = cards.length || 0
+        this.setState({cardLevels: cardLevels})
+      }
+    }).catch(err => console.log(err))
 
-      this.setState({cardLevels: cardLevels})
-    }
   }
 
   render() {
     return(
       <View style={styles.viewOuter}>
-        <Text style={styles.viewHeaderText}>{ this.props.selectedDeck ? this.props.selectedDeck.name : "loading..." }</Text>
+        <Text style={styles.viewHeaderText}>{ GLOBALS.WrapperState.state.selectedDeck ? GLOBALS.WrapperState.state.selectedDeck : "loading..." }</Text>
         { this.props.selectedDeck ? <View style={styles.progressViewContainer}>
           <Column color={Constants.c_level1} stickies={this.state.cardLevels.level1} percent={15 + 85 * this.state.cardLevels.level1 / this.state.cardLevels.total} />
           <Column color={Constants.c_level2} stickies={this.state.cardLevels.level2} percent={15 + 85 * this.state.cardLevels.level2 / this.state.cardLevels.total} />

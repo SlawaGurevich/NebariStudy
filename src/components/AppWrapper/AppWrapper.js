@@ -7,7 +7,7 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { _getOption } from '../../util/database'
+import { _getDecks, _getOption } from '../../util/database'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
@@ -20,7 +20,7 @@ import WelcomeScreen from '../WelcomeScreen'
 import OptionsScreen from '../OptionsScreen'
 import SubOptionsScreen from '../SubOptionsScreen'
 import StudyScreen from '../StudyScreen'
-import BrowseScreen from '../BrowseScreen'
+import BrowseOverview from '../BrowseOverview'
 import HistoryScreen from '../HistoryScreen'
 import DictionaryScreen from '../DictionaryScreen'
 import SingleCardView from '../SingleCardView'
@@ -65,7 +65,7 @@ function HomeScreen() {
         }}
         initialRouteName="Study">
         <Tab.Screen name="Study" component={StudyScreen} />
-        <Tab.Screen name="Browse" component={BrowseScreen} />
+        <Tab.Screen name="Browse" component={BrowseOverview} />
         <Tab.Screen name="History" component={HistoryScreen} />
         <Tab.Screen name="Dictionary" component={DictionaryScreen} />
         <Tab.Screen name="Options" component={OptionsScreen} />
@@ -81,14 +81,23 @@ class AppWrapper extends Component {
     }
 
     GLOBAL.WrapperState = this
-    GLOBAL.loaded = true
   }
 
   componentDidMount() {
     _getOption("SelectedDeck").then(res => {
-      this.setState({
-        selectedDeck: res.value
-      })
+      if (res.value) {
+        this.setState({
+          selectedDeck: res.value,
+          loaded: true
+        })
+      } else {
+        _getDecks(1).then((doc) => {
+          this.setState({
+            selectedDeck: doc.name,
+            loaded: true
+          })
+        })
+      }
     }).catch(err => { console.log(err) })
   }
 
@@ -106,7 +115,7 @@ class AppWrapper extends Component {
 
   render() {
     return (
-      GLOBAL.loaded ? <NavigationContainer theme={this.MyTheme}>
+      this.state.loaded ? <NavigationContainer theme={this.MyTheme}>
         <StatusBar backgroundColor={Constants.c_sage} />
 
         <Stack.Navigator screenOptions={{

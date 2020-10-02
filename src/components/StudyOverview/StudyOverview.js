@@ -23,7 +23,7 @@ import ProgressView from '../ProgressView'
 
 import Dict from '../../util/Dict'
 
-import { _getOption, _getDeck, _getCardsFromDeck } from '../../util/database'
+import { _getOption, _getDeck, _getCardsFromDeck, _getCards } from '../../util/database'
 import { set } from 'react-native-reanimated';
 import { c_highlight, c_borderRadiusDefault, fz_sm, c_light_gray } from '../../constants/styleConstants';
 
@@ -33,28 +33,22 @@ class StudyOverview extends Component {
     this.progressView = React.createRef()
 
     this.state = {
-      selectedDeck: "",
+      currentDeck: "",
       percentage: 20
     }
-  }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.isFocused !== this.props.isFocused) {
-      this.calculatePercentage()
-      this.progressView.forceUpdate()
-    }
+    this.updateDeck = this.updateDeck.bind(this)
   }
 
   updateDeck() {
-    _getOption("SelectedDeck").then(doc => {
-      this.setState({selectedDeck: doc.value})
+    if(this.state.currentDeck !== GLOBALS.WrapperState.state.selectedDeck) {
       this.calculatePercentage()
-    })
+    }
   }
 
   calculatePercentage() {
-    if ( GLOBALS.WrapperState.state.selectedDeck ) {
-      let cards = GLOBALS.WrapperState.state.selectedDeck.cardList
+    _getDeck(GLOBALS.WrapperState.state.selectedDeck).then((doc) => {
+      let cards = doc.cardList
       let totalIterations = cards.length * 4
 
       let level2cards = cards.filter(card => card.level == 2).length
@@ -63,15 +57,18 @@ class StudyOverview extends Component {
       let level5cards = cards.filter(card => card.level == 5).length * 4
 
       let percent = Math.floor((level2cards + level3cards + level4cards + level5cards) / totalIterations)
-      // console.log(percent)
 
-      this.setState({percentage: percent})
-    }
+      this.setState({percentage: percent, currentDeck: GLOBALS.WrapperState.state.selectedDeck})
+    }).catch((err) => {console.log(err)})
+
   }
 
   componentDidMount() {
+    this.calculatePercentage()
     this.updateDeck()
-    this.props.navigation.addListener('focus', () => { this.updateDeck() })
+    this.props.navigation.addListener('focus', this.updateDeck)
+
+    // this.props.navigation.addListener('focus', () => { this.updateDeck() })
   }
 
   render() {
@@ -79,7 +76,7 @@ class StudyOverview extends Component {
       <View style={{flex: 1}}>
         <Header leftItem={
           <TouchableHighlight onPress={ () => { this.props.navigation.navigate('DeckSelect') } } >
-            <Icon name={"book"} size={26} color={"white"} />
+            <Icon name={"book"} size={26} color={globalStyles.c_ming} />
           </TouchableHighlight>
         } title="Study"/>
         <ScrollView>
@@ -88,9 +85,17 @@ class StudyOverview extends Component {
               <ProgressView selectedDeck={ GLOBALS.WrapperState.state.selectedDeck } />
               <View style={globalStyles.separatorBright}></View>
               <ProgressBar progress={ this.state.percentage }/>
-              <TouchableHighlight style={globalStyles.buttonActive} onPress={() => this.props.navigation.navigate('SwipeView', {
-                data: GLOBALS.WrapperState.state.selectedDeck.cardList
-              })}>
+              <TouchableHighlight style={globalStyles.buttonActive} onPress={
+                () => {
+                  _getDeck(GLOBALS.WrapperState.state.selectedDeck).then((doc) => {
+                    console.log("deck")
+                    console.log(doc)
+                    this.props.navigation.navigate('SwipeView', {
+                      deck: doc
+                    })
+                  }).catch(err => {console.log(err)})
+                 }
+              }>
               <Text style={{ color: "white" }}>Start studying</Text>
             </TouchableHighlight>
           </View>

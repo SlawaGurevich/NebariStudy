@@ -13,7 +13,7 @@ import GLOBALS from '../../util/global'
 
 import { SingleCard } from '../SingleCardView'
 
-import { _updateDeck } from '../../util/database'
+import { _updateDeck, _getDeck } from '../../util/database'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height
 const SCREEN_WIDTH = Dimensions.get('window').width
@@ -42,24 +42,27 @@ class Swiper extends Component {
     console.log(this.state.currentCard)
 
     this.levelCard = (updown) => {
-      let currentDeck = GLOBALS.WrapperState.state.selectedDeck
-      let cardIndex = GLOBALS.WrapperState.state.selectedDeck.cardList.indexOf(this.state.currentCard)
+      _getDeck(GLOBALS.WrapperState.state.selectedDeck).then(doc => {
+        let cardIndex = doc.cardList.indexOf(this.state.currentCard)
 
-      currentDeck.cardList[cardIndex].level = updown == "up" ? (currentDeck.cardList[cardIndex].level < 5 ? currentDeck.cardList[cardIndex].level + 1 : 5) : 1
+        doc.cardList[cardIndex].level = updown == "up" ? (doc.cardList[cardIndex].level < 5 ? doc.cardList[cardIndex].level + 1 : 5) : 1
 
-      GLOBALS.WrapperState.setState({selectedDeck: currentDeck})
-      _updateDeck(currentDeck).then(() => {
-        console.log("deck updated")
+        _updateDeck(doc).then(() => {
+          console.log("deck updated")
+        }).catch(err => console.log(err))
+        this.setState({revealed: 0})
+        this.getNextCard()
       })
-      this.setState({revealed: 0})
-      this.getNextCard()
+
     }
 
     this.getNextCard = () => {
-      let nextCard = props.deck.cardList[Math.floor(Math.random() * props.deck.cardList.length)]
-      this.setState({
-        currentCard: this.state.nextCard,
-        nextCard: nextCard
+      _getDeck(GLOBALS.WrapperState.state.selectedDeck).then(doc => {
+        let nextCard = doc.cardList[Math.floor(Math.random() * props.deck.cardList.length)]
+        this.setState({
+          currentCard: this.state.nextCard,
+          nextCard: nextCard
+        })
       })
     }
 
@@ -150,7 +153,6 @@ class Swiper extends Component {
               style={[ {position: "relative", zIndex: 999}, this.rotateAndTranslate, styles.card]}
             >
 
-                <TouchableWithoutFeedback onPress={() => {this.setState({revealed: 1})}}>
                   <View  style={{flex: 1}}>
                     <SingleCard word={this.state.currentCard.entry}
                                     level={this.state.currentCard.level}
@@ -168,7 +170,6 @@ class Swiper extends Component {
                       <Icon name="check" size={36} color={"green"}/>
                     </Animated.View>
                   </View>
-                </TouchableWithoutFeedback>
           </Animated.View>
 
 

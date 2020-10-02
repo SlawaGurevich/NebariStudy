@@ -92,18 +92,16 @@ class DeckSelect extends Component {
   }
 
   setSelectedDeck(name) {
-    _getDeck(name).then(deck => {
-      _setOption("SelectedDeck", "String", deck).then(doc => {
-        GLOBALS.WrapperState.setState({selectedDeck: deck, refreshDeck: true})
-        this.setState({ selectedDeck: deck })
-      })
+    _setOption("SelectedDeck", "String", name).then(doc => {
+      GLOBALS.WrapperState.setState({selectedDeck: name, refreshDeck: true})
+      this.setState({ selectedDeck: name })
     })
   }
 
   getDecks() {
     this.setState({loading: true})
    _getDecks().then( (res) => {
-      this.setState({decks: res.docs})
+      this.setState({decks: res.docs.map(d => ( {name: d.name, cards: d.cardList.length}) )})
       this.setState({loading: false})
       for( let i = 0; i < res.docs.length; i++) {
         console.log(res.docs[i].cardList.length)
@@ -142,7 +140,7 @@ class DeckSelect extends Component {
         </Dialog.Container>
         <Header leftItem={
           <TouchableWithoutFeedback onPress={ () => { this.navigation.goBack() } }>
-            <Icon name="close" color="white" size={20} />
+            <Icon name="close" color={globalStyles.c_ming} size={20} />
           </TouchableWithoutFeedback>
         } title="Select a deck to study"
         rightItem={
@@ -155,7 +153,7 @@ class DeckSelect extends Component {
         { !this.state.loading ? <ScrollView style={{flexBasis: "100%"}}>
           {
             this.state.decks.length > 0 ? this.state.decks.map( (deck, i) => (
-              <DeckButton key={i} name={deck.name} isSelected={deck.name == this.state.selectedDeck.name } size={deck.cardList ? deck.cardList.length : 0} getDecks={this.getDecks} setSelectedDeck={this.setSelectedDeck} />
+              <DeckButton key={i} name={deck.name} isSelected={deck.name == this.state.selectedDeck } size={deck.cards ? deck.cards : 0} getDecks={this.getDecks} setSelectedDeck={this.setSelectedDeck} />
             ) ) : <View styles={ globalStyles.loadingView }><Text>No decks. Please create some.</Text></View>
           }
         </ScrollView> : <View style={ globalStyles.loadingView }><Text>Loading...</Text></View> }

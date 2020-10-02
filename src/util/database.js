@@ -26,9 +26,10 @@ const _addDeck = (name, cards = []) => {
   })
 }
 
-const _getDecks = () => {
+const _getDecks = (limit = 9999) => {
   return db.find({
-    selector: {type: "Deck"}
+    selector: {type: "Deck"},
+    limit: limit
   })
 }
 
