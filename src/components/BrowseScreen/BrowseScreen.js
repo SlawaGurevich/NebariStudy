@@ -26,6 +26,8 @@ import { _getOption, _getDeck, _getCardsFromDeck } from '../../util/database'
 let cardSize = ( Math.floor(Dimensions.get('window').width) - (2 * 20) - (3 * 10) ) / 4
 
 class BrowseScreen extends Component {
+  _isMounted = false
+
   constructor(props) {
     super(props)
     console.log(props.selectedDeck)
@@ -36,7 +38,12 @@ class BrowseScreen extends Component {
     this.navigation = props.navigation
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   componentDidMount() {
+    this._isMounted = true
     _getDeck(GLOBALS.WrapperState.state.selectedDeck).then(doc => {
       this.setState({stickies: doc.cardList, loading: false})
     }).catch(err => { console.log(err) })

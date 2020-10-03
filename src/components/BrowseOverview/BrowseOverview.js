@@ -7,6 +7,8 @@ import BrowseScreen from '../BrowseScreen'
 import { _getDeck } from '../../util/database'
 
 class BrowseOverview extends Component {
+  _isMounted = false
+
   constructor(props) {
     super(props)
     this.navigation = props.navigation
@@ -18,14 +20,9 @@ class BrowseOverview extends Component {
     this.props.navigation.addListener('focus', this.updateDeck)
   }
 
-  updateDeck = () => {
-    console.log("update deck")
-    console.log(this.state.selectedDeck)
-    if( this.state.selectedDeck != GLOBALS.WrapperState.state.selectedDeck ){
-      this.getDeck()
-    }
+  componentWillUnmount() {
+    this._isMounted = false;
   }
-
 
   componentDidUpdate(previousProps, previousState) {
     console.log("component did update")
@@ -35,7 +32,16 @@ class BrowseOverview extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true
     this.getDeck()
+  }
+
+  updateDeck = () => {
+    console.log("update deck")
+    console.log(this.state.selectedDeck)
+    if( this._isMounted && (this.state.selectedDeck != GLOBALS.WrapperState.state.selectedDeck) ){
+      this.getDeck()
+    }
   }
 
   getDeck = () => {
