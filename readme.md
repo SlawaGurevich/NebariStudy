@@ -25,18 +25,18 @@ The app is very much in a beta state right now and a ton of features are missing
 
 ## Screens
 
-![](https://drive.slawagurevich.com/nebaristudy/nebari-study.png)
+<img src="https://drive.slawagurevich.com/nebaristudy/nebari-study.png" alt="Study Screen" width="400"/>
 The study overview screen
 
-![](https://drive.slawagurevich.com/nebaristudy/nebari-detail.png)
+<img src="https://drive.slawagurevich.com/nebaristudy/nebari-detail.png" alt="Detail Screen" width="400"/>
 The kanji detail screen
 
-![](https://drive.slawagurevich.com/nebaristudy/nebari-dict.png)
+<img src="https://drive.slawagurevich.com/nebaristudy/nebari-dict.png" alt="Dictionary Screen" width="400"/>
 The dictionary screen
 
-![](https://drive.slawagurevich.com/nebaristudy/nebari-browse.png)
+<img src="https://drive.slawagurevich.com/nebaristudy/nebari-browse.png" alt="Deck Browsing" width="400"/>
 Browsing the deck
 
-![](https://drive.slawagurevich.com/nebaristudy/nebari-swipe.png)
+<img src="https://drive.slawagurevich.com/nebaristudy/nebari-swipe.png" alt="Swipe Screen" width="400"/>
 The study screen with swiping
 
