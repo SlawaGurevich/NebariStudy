@@ -67,7 +67,7 @@ class BrowseScreen extends Component {
   render(){
     return (
       <View key={GLOBALS.WrapperState.state.selectedDeck}>
-        <Header title="Browse"/>
+        <Header title={`Browse ${GLOBALS.WrapperState.state.selectedDeck}`}/>
         <View style={[ globalStyles.generalView ]}>
           { this.state.stickies.length > 0 && !this.state.loading ? <FlatGrid data={this.state.stickies}
                     itemDimension={cardSize}
@@ -96,13 +96,6 @@ class BrowseScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  stickyView: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "flex-start",
-    alignItems: "flex-start"
-  },
   shadow: {
     shadowColor: styleConstants.c_coral,
     shadowOffset:{
