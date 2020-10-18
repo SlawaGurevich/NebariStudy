@@ -13,6 +13,7 @@ export const c_light_gray = "#E4E4E4"
 export const c_blueish_gray = "#1D1E2C"
 export const c_dark_olive_green = "#4B543B"
 export const c_coral = "#D88A8A"
+export const c_gray = "#D8D8D8"
 
 // export const c_army_green = "#514B23"
 // export const c_sage = "#CBC9AD"

@@ -1,5 +1,7 @@
+import React from 'react'
 import { StyleSheet } from 'react-native'
 import * as Constants from './styleConstants'
+import Androw from 'react-native-androw'
 
 const globalStyles = StyleSheet.create({
   generalView: {

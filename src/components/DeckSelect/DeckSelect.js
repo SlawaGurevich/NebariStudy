@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 
 import GLOBALS from '../../util/global'
 
-import globalStyles from '../../constants/globalStyles'
+import globalStyles, { withShadow } from '../../constants/globalStyles'
 
 import {
   Text,
@@ -19,52 +19,16 @@ import Dialog from "react-native-dialog";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Header from '../Header'
+import DeckButton from './DeckButton'
+
 import * as Constants from '../../constants/styleConstants'
 
 import { _getDecks, _deleteDeck, _addDeck, _setOption, _getOption, _getDeck } from '../../util/database'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 
-const DeckButton = (props) => {
-  return (
-      <TouchableHighlight onPress={() => {
-        props.setSelectedDeck(props.name)
-      }}>
-        <View style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingHorizontal: 10,
-          height: 60,
-          borderBottomColor: Constants.c_ash_gray,
-          borderBottomWidth: 1
-        }}>
-          <View style={{
-            display: "flex",
-            flexGrow: 1,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginEnd: 20
-          }}>
-            <Text style={{fontWeight: props.isSelected ? "bold" : "normal"}}>{props.name}</Text>
-            <Text>{props.size}</Text>
-          </View>
-          <TouchableWithoutFeedback onPress={ () => {
-            _deleteDeck(props.name).then(res => {
-              // console.log(res)
-              getDecks()
-            }).catch(err => {
-              console.log("err")
-            })
-          }}>
-            <Icon name="trash" color="red" size={20} />
-          </TouchableWithoutFeedback>
-        </View>
-      </TouchableHighlight>
-  )
-}
-
 class DeckSelect extends Component {
+  _isMounted = false
+
   constructor (props){
     super (props)
     this.navigation = props.navigation
@@ -88,7 +52,12 @@ class DeckSelect extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true
     this.getDecks()
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
   }
 
   setSelectedDeck(name) {
@@ -99,16 +68,18 @@ class DeckSelect extends Component {
   }
 
   getDecks() {
-    this.setState({loading: true})
-   _getDecks().then( (res) => {
-      this.setState({decks: res.docs.map(d => ( {name: d.name, cards: d.cardList.length}) )})
-      this.setState({loading: false})
-      for( let i = 0; i < res.docs.length; i++) {
-        console.log(res.docs[i].cardList.length)
-      }
-    }).catch((err) => {
-      console.log(err)
-    })
+    if(this._isMounted) {
+      this.setState({loading: true})
+     _getDecks().then( (res) => {
+        this.setState({decks: res.docs.map(d => ( {name: d.name, cards: d.cardList}) )})
+        this.setState({loading: false})
+        for( let i = 0; i < res.docs.length; i++) {
+          console.log(res.docs[i].cardList.length)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
   }
 
   handleChange(event) {
@@ -147,13 +118,25 @@ class DeckSelect extends Component {
           <TouchableWithoutFeedback onPress={() => {
             this.setState({dialogVisible: true})
           } } >
-            <Icon name="plus" color="white" size={20} />
+            <Icon name="plus" size={20} />
           </TouchableWithoutFeedback>
         }/>
-        { !this.state.loading ? <ScrollView style={{flexBasis: "100%"}}>
+        { !this.state.loading ? <ScrollView style={{flexBasis: "100%", paddingTop: 20}}>
           {
             this.state.decks.length > 0 ? this.state.decks.map( (deck, i) => (
-              <DeckButton key={i} name={deck.name} isSelected={deck.name == this.state.selectedDeck } size={deck.cards ? deck.cards : 0} getDecks={this.getDecks} setSelectedDeck={this.setSelectedDeck} />
+              <DeckButton key={i}
+                          name={deck.name}
+                          levels={{
+                            "level1": deck.cards.filter(c => c.level == 1 || !c.level).length,
+                            "level2": deck.cards.filter(c => c.level == 2).length,
+                            "level3": deck.cards.filter(c => c.level == 3).length,
+                            "level4": deck.cards.filter(c => c.level == 4).length,
+                            "level5": deck.cards.filter(c => c.level == 5).length
+                          }}
+                          isSelected={deck.name == this.state.selectedDeck }
+                          size={deck.cards ? deck.cards.length : 0}
+                          getDecks={this.getDecks}
+                          setSelectedDeck={this.setSelectedDeck} />
             ) ) : <View styles={ globalStyles.loadingView }><Text>No decks. Please create some.</Text></View>
           }
         </ScrollView> : <View style={ globalStyles.loadingView }><Text>Loading...</Text></View> }
